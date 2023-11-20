@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+}
+
+group = 'dev.gym'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.springframework:spring-context:$springVersion"
+    implementation "jakarta.annotation:jakarta.annotation-api:$jakartaVersion"
+
+    // pull in logback-core and slf4j-api
+    implementation "ch.qos.logback:logback-classic:$logbackVersion"
+
+
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+    testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiterVersion"
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
+    testImplementation "org.springframework:spring-test:$springVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiterVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+}
+
+test {
+    finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+jacocoTestReport {
+    reports{
+        xml.required = true
+    }
+    dependsOn test // tests are required to run before generating the report
+}
+
+test {
+    useJUnitPlatform()
+}
