@@ -1,14 +1,16 @@
 package dev.gym.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.concurrent.atomic.AtomicLong;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class User implements BaseEntity<Long> {
-    protected Long userId; //PK
+    private Long id; //PK
     protected String firstName;
     protected String lastName;
     protected String username;
@@ -23,21 +25,11 @@ public class User implements BaseEntity<Long> {
                 String username,
                 String password,
                 boolean isActive){
-        this.userId = idGenerator.getAndIncrement();
+        this.id = idGenerator.getAndIncrement();
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
         this.isActive = isActive;
-    }
-
-    @Override
-    public Long getId() {
-        return userId;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.userId = id;
     }
 }

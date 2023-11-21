@@ -1,12 +1,14 @@
 package dev.gym.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.concurrent.atomic.AtomicLong;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Specialization{
     private Long id;
     private String specializationTypeName;

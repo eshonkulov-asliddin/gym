@@ -1,18 +1,16 @@
 package dev.gym.model;
 
 import dev.gym.repository.datasource.credential.CredentialGenerator;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 
 import java.util.concurrent.atomic.AtomicLong;
 
 
-@Getter
-@Setter
-@ToString
+@Data
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class Trainer extends User {
     private Long id; //PK
     private Specialization specialization; //FK
