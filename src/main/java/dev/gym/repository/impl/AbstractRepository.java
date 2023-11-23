@@ -28,11 +28,6 @@ abstract class AbstractRepository<T extends BaseEntity<K>, K>
 
     public T save(T entity) {
         K id = entity.getId();
-        if (data.containsKey(id)) {
-            data.replace(id, entity);
-            logger.info("Entity with id {} updated", id);
-            return entity;
-        }
         data.put(id, entity);
         logger.info("Entity saved");
         return entity;
