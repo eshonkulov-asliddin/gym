@@ -3,7 +3,6 @@ package dev.gym.service.impl;
 import dev.gym.model.Training;
 import dev.gym.repository.BaseRepository;
 import dev.gym.service.BaseService;
-import dev.gym.service.exception.NotFoundException;
 import dev.gym.service.exception.util.ExceptionMsg;
 import dev.gym.service.validator.Validator;
 import org.slf4j.Logger;
@@ -36,7 +35,7 @@ public class TrainingService implements BaseService<Training, Long> {
         Optional<Training> training = trainingRepository.findById(id);
         if ( training.isEmpty() ){
             logger.error(String.format(ExceptionMsg.NOT_FOUND_MESSAGE, "Training", id));
-            throw new NotFoundException(String.format(ExceptionMsg.NOT_FOUND_MESSAGE, "Training", id));
+            return Optional.empty();
         }
         return training;
     }

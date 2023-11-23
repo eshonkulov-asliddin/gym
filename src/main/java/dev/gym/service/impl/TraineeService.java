@@ -36,7 +36,7 @@ public class TraineeService implements BaseService<Trainee, Long> {
         Optional<Trainee> trainee = traineeRepository.findById(id);
         if (trainee.isEmpty()){
             logger.error(String.format(ExceptionMsg.NOT_FOUND_MESSAGE, "Trainee", id));
-            throw new NotFoundException(String.format(ExceptionMsg.NOT_FOUND_MESSAGE, "Trainee", id));
+            return Optional.empty();
         }
         return trainee;
     }
