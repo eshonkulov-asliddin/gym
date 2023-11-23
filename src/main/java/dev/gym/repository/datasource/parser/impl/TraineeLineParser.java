@@ -3,17 +3,15 @@ package dev.gym.repository.datasource.parser.impl;
 import dev.gym.model.Trainee;
 import dev.gym.repository.datasource.credential.impl.SimpleCredentialGenerator;
 import dev.gym.repository.datasource.parser.LineParser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
 @Component
 public class TraineeLineParser implements LineParser<Trainee> {
-    private final SimpleCredentialGenerator simpleCredentialGenerator;
+    private SimpleCredentialGenerator simpleCredentialGenerator;
 
-    public TraineeLineParser(SimpleCredentialGenerator simpleCredentialGenerator) {
-        this.simpleCredentialGenerator = simpleCredentialGenerator;
-    }
     @Override
     public Trainee parse(String line) {
 
@@ -39,5 +37,9 @@ public class TraineeLineParser implements LineParser<Trainee> {
             builder.address(fields[4].trim());
         }
         return builder.build();
+    }
+    @Autowired
+    public void setSimpleCredentialGenerator(SimpleCredentialGenerator simpleCredentialGenerator) {
+        this.simpleCredentialGenerator = simpleCredentialGenerator;
     }
 }
