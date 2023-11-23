@@ -1,7 +1,7 @@
 package dev.gym.repository.impl;
 
 import dev.gym.model.Trainee;
-import dev.gym.repository.datasource.reader.Reader;
+import dev.gym.repository.datasource.reader.FileReader;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -17,18 +17,20 @@ public class TraineeRepository extends AbstractRepository<Trainee, Long> {
     private static final Logger logger = LoggerFactory.getLogger(TraineeRepository.class);
     @Getter
     private final Map<Long, Trainee> data;
-    private final Reader<Trainee> reader;
+    private final FileReader<Trainee> fileReader;
 
     @Autowired
     TraineeRepository(Map<Long, Trainee> data,
-                      Reader<Trainee> reader) {
+                      FileReader<Trainee> fileReader) {
         super(logger, data);
         this.data = data;
-        this.reader = reader;
+        this.fileReader = fileReader;
     }
 
     @PostConstruct
     private void loadTrainees(){
-        reader.read().forEach(trainee -> data.put(trainee.getId(), trainee));
+        fileReader.read().forEach(trainee -> {
+            data.put(trainee.getId(), trainee);
+        });
     }
 }
