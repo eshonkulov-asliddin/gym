@@ -22,13 +22,11 @@ public class Trainer extends User {
                    CredentialGenerator credentialGenerator,
                    boolean isActive,
                    Specialization specialization) {
-        super(
-                firstName,
+        super(firstName,
                 lastName,
                 credentialGenerator.generateUsername(firstName, lastName),
                 credentialGenerator.generatePassword(),
-                isActive
-        );
+                isActive);
         this.id = idGenerator.getAndIncrement();
         this.specialization = specialization;
     }

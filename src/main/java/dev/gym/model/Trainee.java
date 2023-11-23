@@ -27,13 +27,11 @@ public class Trainee extends User {
                    boolean isActive,
                    LocalDate dateOfBirth,
                    String address) {
-        super(
-                firstName,
+        super(firstName,
                 lastName,
                 credentialGenerator.generateUsername(firstName, lastName),
                 credentialGenerator.generatePassword(),
-                isActive
-        );
+                isActive);
 
         this.dateOfBirth = dateOfBirth;
         this.address = address;
