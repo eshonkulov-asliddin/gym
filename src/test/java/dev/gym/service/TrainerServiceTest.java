@@ -4,7 +4,6 @@ import dev.gym.config.AppConfig;
 import dev.gym.model.Specialization;
 import dev.gym.model.Trainer;
 import dev.gym.repository.datasource.credential.CredentialGenerator;
-import dev.gym.service.exception.NotFoundException;
 import dev.gym.service.impl.TrainerService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -62,12 +61,12 @@ class TrainerServiceTest {
         Trainer trainer = new Trainer(null, null, credentialGenerator, true, null);
 
         // Save the trainer
-        Assertions.assertThrows(IllegalArgumentException.class, () -> trainerService.save(trainer));
+        assertThrows(IllegalArgumentException.class, () -> trainerService.save(trainer));
 
     }
 
     @Test
-    void givenWrongId_whenFindById_thenThrowNotFoundException(){
-        Assertions.assertThrows(NotFoundException.class, () -> trainerService.getById (null));
+    void givenWrongId_whenFindById_thenReturnOptionalEmpty(){
+        assertTrue(trainerService.getById (null).isEmpty());
     }
 }

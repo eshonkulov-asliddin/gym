@@ -3,7 +3,6 @@ package dev.gym.service;
 import dev.gym.config.AppConfig;
 import dev.gym.model.Trainee;
 import dev.gym.repository.datasource.credential.CredentialGenerator;
-import dev.gym.service.exception.NotFoundException;
 import dev.gym.service.impl.TraineeService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringJUnitConfig(classes = AppConfig.class)
 class TraineeServiceTest {
@@ -45,7 +46,7 @@ class TraineeServiceTest {
         Trainee savedTrainee = traineeService.save(trainee);
 
         // Find the trainee by id
-        Assertions.assertTrue(traineeService.getById (savedTrainee.getId()).isPresent());
+        assertTrue(traineeService.getById (savedTrainee.getId()).isPresent());
 
         // Find all trainees
         Assertions.assertFalse(traineeService.getAll ().isEmpty());
@@ -57,7 +58,7 @@ class TraineeServiceTest {
         Assertions.assertEquals("Jane", traineeService.getById (savedTrainee.getId()).get().getFirstName());
 
         // Delete the trainee by id
-        Assertions.assertTrue(traineeService.deleteById(savedTrainee.getId()));
+        assertTrue(traineeService.deleteById(savedTrainee.getId()));
     }
 
     @Test
@@ -73,7 +74,7 @@ class TraineeServiceTest {
     }
 
     @Test
-    void givenWrongId_whenFindById_thenThrowNotFoundException(){
-        Assertions.assertThrows(NotFoundException.class, () -> traineeService.getById (null));
+    void givenWrongId_whenFindById_thenReturnOptionalEmpty(){
+        assertTrue(traineeService.getById (null).isEmpty());
     }
 }

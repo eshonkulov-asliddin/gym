@@ -6,7 +6,6 @@ import dev.gym.model.Trainer;
 import dev.gym.model.Training;
 import dev.gym.model.TrainingType;
 import dev.gym.repository.datasource.credential.CredentialGenerator;
-import dev.gym.service.exception.NotFoundException;
 import dev.gym.service.impl.TrainingService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +74,7 @@ class TrainingServiceTest {
     }
 
     @Test
-    void givenWrongId_whenFindById_thenThrowNotFoundException(){
-        assertThrows(NotFoundException.class, () -> trainingService.getById (null));
+    void givenWrongId_whenFindById_thenReturnOptionalEmpty(){
+        assertTrue(trainingService.getById (null).isEmpty());
     }
 }
