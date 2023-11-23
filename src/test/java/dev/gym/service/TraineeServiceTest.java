@@ -15,14 +15,21 @@ import java.time.LocalDate;
 @SpringJUnitConfig(classes = AppConfig.class)
 class TraineeServiceTest {
 
-    @Autowired private TraineeService traineeService;
-    @Autowired private CredentialGenerator credentialGenerator;
+    private final TraineeService traineeService;
+    private final CredentialGenerator credentialGenerator;
+
+    @Autowired
+    TraineeServiceTest(TraineeService traineeService,
+                       CredentialGenerator credentialGenerator) {
+        this.traineeService = traineeService;
+        this.credentialGenerator = credentialGenerator;
+    }
 
     @Test
     void testCRUD(){
         // fields values
         String firstName = "John";
-        String lastName = "Doe";;
+        String lastName = "Doe";
         boolean isActive = true;
 
         // Create a new trainee with Builder
@@ -38,16 +45,16 @@ class TraineeServiceTest {
         Trainee savedTrainee = traineeService.save(trainee);
 
         // Find the trainee by id
-        Assertions.assertTrue(traineeService.findById(savedTrainee.getId()).isPresent());
+        Assertions.assertTrue(traineeService.getById (savedTrainee.getId()).isPresent());
 
         // Find all trainees
-        Assertions.assertFalse(traineeService.findAll().isEmpty());
+        Assertions.assertFalse(traineeService.getAll ().isEmpty());
 
         // Update the trainee
         savedTrainee.setFirstName("Jane");
         traineeService.save(savedTrainee);
 
-        Assertions.assertEquals("Jane", traineeService.findById(savedTrainee.getId()).get().getFirstName());
+        Assertions.assertEquals("Jane", traineeService.getById (savedTrainee.getId()).get().getFirstName());
 
         // Delete the trainee by id
         Assertions.assertTrue(traineeService.deleteById(savedTrainee.getId()));
@@ -67,6 +74,6 @@ class TraineeServiceTest {
 
     @Test
     void givenWrongId_whenFindById_thenThrowNotFoundException(){
-        Assertions.assertThrows(NotFoundException.class, () -> traineeService.findById(null));
+        Assertions.assertThrows(NotFoundException.class, () -> traineeService.getById (null));
     }
 }

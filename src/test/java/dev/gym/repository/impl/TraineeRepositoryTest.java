@@ -16,16 +16,31 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringJUnitConfig(classes = RepositoryConfig.class)
 class TraineeRepositoryTest {
 
-    @Autowired private ApplicationContext context;
-    @Autowired private SimpleCredentialGenerator simpleCredentialGenerator;
+    private final ApplicationContext context;
+    private final SimpleCredentialGenerator simpleCredentialGenerator;
 
     private Trainee trainee;
+
+    @Autowired
+    TraineeRepositoryTest(ApplicationContext context,
+                          SimpleCredentialGenerator simpleCredentialGenerator) {
+        this.context = context;
+        this.simpleCredentialGenerator = simpleCredentialGenerator;
+    }
 
     @BeforeEach
     void setUp(){
         // Given
-        trainee = new Trainee.Builder("John", "Doe", simpleCredentialGenerator, true)
-                .dateOfBirth(LocalDate.parse("1990-01-01"))
+        String date = "1990-01-01";
+        String firstName = "John";
+        String lasrtName = "Doe";
+        boolean isActive = true;
+        trainee = Trainee.builder()
+                .firstName(firstName)
+                .lastName(lasrtName)
+                .credentialGenerator(simpleCredentialGenerator)
+                .isActive(isActive)
+                .dateOfBirth(LocalDate.parse(date))
                 .build();
     }
 
@@ -65,7 +80,8 @@ class TraineeRepositoryTest {
 
         // When
         traineeRepository.save(trainee);
-        String UPDATED_FIRSTNAME = "Jane";
+        String newFirstName = "Jane";
+        String UPDATED_FIRSTNAME = newFirstName;
         trainee.setFirstName(UPDATED_FIRSTNAME);
         traineeRepository.save(trainee);
 

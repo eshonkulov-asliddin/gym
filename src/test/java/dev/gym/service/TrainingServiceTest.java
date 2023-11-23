@@ -20,8 +20,14 @@ import static org.mockito.Mockito.mock;
 @SpringJUnitConfig(classes = AppConfig.class)
 class TrainingServiceTest {
 
-    @Autowired private TrainingService trainingService;
-    @Autowired private CredentialGenerator credentialGenerator;
+    private final TrainingService trainingService;
+    private final CredentialGenerator credentialGenerator;
+
+    @Autowired
+    TrainingServiceTest(TrainingService trainingService, CredentialGenerator credentialGenerator) {
+        this.trainingService = trainingService;
+        this.credentialGenerator = credentialGenerator;
+    }
 
     @Test
     void testCRUD(){
@@ -48,10 +54,10 @@ class TrainingServiceTest {
         assertNotNull(savedTraining);
 
         // Find the training by id
-        assertTrue(trainingService.findById(savedTraining.getId()).isPresent());
+        assertTrue(trainingService.getById (savedTraining.getId()).isPresent());
 
         // Find all trainings
-        assertFalse(trainingService.findAll().isEmpty());
+        assertFalse(trainingService.getAll ().isEmpty());
 
         // Delete the training
         assertThrows(UnsupportedOperationException.class, () -> trainingService.deleteById(savedTraining.getId()));
@@ -70,6 +76,6 @@ class TrainingServiceTest {
 
     @Test
     void givenWrongId_whenFindById_thenThrowNotFoundException(){
-        assertThrows(NotFoundException.class, () -> trainingService.findById(null));
+        assertThrows(NotFoundException.class, () -> trainingService.getById (null));
     }
 }

@@ -16,17 +16,21 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringJUnitConfig(classes = AppConfig.class)
 class TrainerServiceTest {
 
+    private final TrainerService trainerService;
+    private final CredentialGenerator credentialGenerator;
+
     @Autowired
-    private TrainerService trainerService;
-    @Autowired
-    private CredentialGenerator credentialGenerator;
+    TrainerServiceTest(TrainerService trainerService,
+                       CredentialGenerator credentialGenerator) {
+        this.trainerService = trainerService;
+        this.credentialGenerator = credentialGenerator;
+    }
 
     @Test
     void testCRUD() {
         // fields values
         String firstName = "John";
         String lastName = "Doe";
-        ;
         boolean isActive = true;
         Specialization specialization = new Specialization("Bodybuilding");
 
@@ -36,16 +40,16 @@ class TrainerServiceTest {
         Trainer savedTrainer = trainerService.save(trainer);
 
         // Find the trainer by id
-        assertTrue(trainerService.findById(savedTrainer.getId()).isPresent());
+        assertTrue(trainerService.getById (savedTrainer.getId()).isPresent());
 
         // Find all trainers
-        assertFalse(trainerService.findAll().isEmpty());
+        assertFalse(trainerService.getAll ().isEmpty());
 
         // Update the trainer
         savedTrainer.setFirstName("Jane");
         trainerService.save(savedTrainer);
 
-        Assertions.assertEquals("Jane", trainerService.findById(savedTrainer.getId()).get().getFirstName());
+        Assertions.assertEquals("Jane", trainerService.getById (savedTrainer.getId()).get().getFirstName());
 
         // Delete the trainer by id
         assertThrows(UnsupportedOperationException.class, () -> trainerService.deleteById(savedTrainer.getId()));
@@ -64,6 +68,6 @@ class TrainerServiceTest {
 
     @Test
     void givenWrongId_whenFindById_thenThrowNotFoundException(){
-        Assertions.assertThrows(NotFoundException.class, () -> trainerService.findById(null));
+        Assertions.assertThrows(NotFoundException.class, () -> trainerService.getById (null));
     }
 }

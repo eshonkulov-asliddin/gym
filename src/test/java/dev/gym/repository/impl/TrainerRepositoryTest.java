@@ -15,9 +15,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringJUnitConfig(classes = RepositoryConfig.class)
 class TrainerRepositoryTest {
 
-    @Autowired private ApplicationContext context;
-    @Autowired private SimpleCredentialGenerator simpleCredentialGenerator;
     private Trainer trainer;
+    private final ApplicationContext context;
+    private final SimpleCredentialGenerator simpleCredentialGenerator;
+
+    @Autowired
+    TrainerRepositoryTest(ApplicationContext context,
+                          SimpleCredentialGenerator simpleCredentialGenerator) {
+        this.context = context;
+        this.simpleCredentialGenerator = simpleCredentialGenerator;
+    }
 
     @BeforeEach
     void setUp(){
