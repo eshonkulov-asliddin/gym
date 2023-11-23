@@ -28,28 +28,25 @@ public class TrainerService implements BaseService<Trainer, Long> {
     }
 
     @Override
-    public Map<Long, Trainer> findAll() {
+    public Map<Long, Trainer> getAll() {
         return trainerRepository.findAll();
     }
 
     @Override
-    public Optional<Trainer> findById(Long id) {
-        Optional<Trainer> byId = trainerRepository.findById(id);
-        if (byId.isEmpty()){
+    public Optional<Trainer> getById(Long id) {
+        Optional<Trainer> trainer = trainerRepository.findById(id);
+        if ( trainer.isEmpty() ){
             logger.error(String.format(ExceptionMsg.NOT_FOUND_MESSAGE, "Trainer", id));
             throw new NotFoundException(String.format(ExceptionMsg.NOT_FOUND_MESSAGE, "Trainer", id));
         }
-        return byId;
+        return trainer;
     }
 
     @Override
     public Trainer save(Trainer entity) {
         // Validate entity
-        boolean isValid = trainerValidator.isValid(entity);
-        if (!isValid){
-            logger.error(String.format(ExceptionMsg.ILLIGAL_ARGUMENT_MESSAGE, "Trainer"));
-            throw new IllegalArgumentException(String.format(ExceptionMsg.ILLIGAL_ARGUMENT_MESSAGE, "Trainer"));
-        }
+        trainerValidator.validate (entity);
+
         return trainerRepository.save(entity);
     }
 

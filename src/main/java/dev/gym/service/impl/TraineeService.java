@@ -27,34 +27,31 @@ public class TraineeService implements BaseService<Trainee, Long> {
         this.traineeValidator = traineeValidator;
     }
     @Override
-    public Map<Long, Trainee> findAll() {
+    public Map<Long, Trainee> getAll() {
         return traineeRepository.findAll();
     }
 
     @Override
-    public Optional<Trainee> findById(Long id) {
-        Optional<Trainee> byId = traineeRepository.findById(id);
-        if (byId.isEmpty()){
+    public Optional<Trainee> getById(Long id) {
+        Optional<Trainee> trainee = traineeRepository.findById(id);
+        if (trainee.isEmpty()){
             logger.error(String.format(ExceptionMsg.NOT_FOUND_MESSAGE, "Trainee", id));
             throw new NotFoundException(String.format(ExceptionMsg.NOT_FOUND_MESSAGE, "Trainee", id));
         }
-        return byId;
+        return trainee;
     }
 
     @Override
     public Trainee save(Trainee entity) {
         // Validate entity
-        boolean valid = traineeValidator.isValid(entity);
-        if (!valid) {
-            logger.error(String.format(ExceptionMsg.ILLIGAL_ARGUMENT_MESSAGE, "Trainee"));
-            throw new IllegalArgumentException(String.format(ExceptionMsg.ILLIGAL_ARGUMENT_MESSAGE, "Trainee"));
-        }
+        traineeValidator.validate (entity);
+
         return traineeRepository.save(entity);
     }
 
     @Override
     public boolean deleteById(Long id) {
-        if(findById(id).isEmpty()){
+        if( getById(id).isEmpty() ){
             logger.error(String.format(ExceptionMsg.NOT_FOUND_MESSAGE, "Trainee", id));
             throw new NotFoundException(String.format(ExceptionMsg.NOT_FOUND_MESSAGE, "Trainee", id));
         }
