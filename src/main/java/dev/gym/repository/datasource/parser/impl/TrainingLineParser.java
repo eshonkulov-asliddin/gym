@@ -5,6 +5,7 @@
     import dev.gym.model.Training;
     import dev.gym.model.TrainingType;
     import dev.gym.repository.datasource.parser.LineParser;
+    import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Component;
 
     import java.time.LocalDate;
@@ -17,6 +18,7 @@
         private final Map<Long, Trainee> traineeStore;
         private final Map<Long, Trainer> trainerStore;
 
+        @Autowired
         public TrainingLineParser(Map<Long, Trainee> traineeStore,
                                   Map<Long, Trainer> trainerStore) {
             this.traineeStore = traineeStore;
