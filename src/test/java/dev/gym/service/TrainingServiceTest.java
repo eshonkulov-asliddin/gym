@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -53,13 +54,14 @@ class TrainingServiceTest {
         assertNotNull(savedTraining);
 
         // Find the training by id
-        assertTrue(trainingService.getById (savedTraining.getId()).isPresent());
+        boolean present = trainingService.getById(savedTraining.getId()).isPresent();
+        assertTrue(present);
 
         // Find all trainings
-        assertFalse(trainingService.getAll ().isEmpty());
+        assertFalse(trainingService.getAll().isEmpty());
 
         // Delete the training
-        assertThrows(UnsupportedOperationException.class, () -> trainingService.deleteById(savedTraining.getId()));
+        assertThrows(UnsupportedOperationException.class, () -> trainingService.deleteById(1L));
 
     }
 
@@ -75,6 +77,6 @@ class TrainingServiceTest {
 
     @Test
     void givenWrongId_whenFindById_thenReturnOptionalEmpty(){
-        assertTrue(trainingService.getById (null).isEmpty());
+        assertEquals(Optional.empty(), trainingService.getById(null));
     }
 }

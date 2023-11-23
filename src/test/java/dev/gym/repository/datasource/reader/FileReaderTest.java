@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringJUnitConfig(classes = RepositoryConfig.class)
 class FileReaderTest {
@@ -29,18 +29,18 @@ class FileReaderTest {
     @Test
     void testReadTrainees() {
         var trainees = traineeFileReader.read();
-        assertTrue(trainees.size() > 0);
+        assertEquals(10, trainees.size());
     }
 
     @Test
     void testReadTrainers() {
         var trainers = trainerFileReader.read();
-        assertTrue(trainers.size() > 0);
+        assertEquals(10, trainers.size());
     }
 
     @Test
     void testReadTrainings() {
         var trainings = trainingFileReader.read();
-        assertTrue(trainings.size() > 0);
+        assertEquals(10, trainings.size());
     }
 }

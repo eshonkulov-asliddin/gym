@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitConfig(classes = AppConfig.class)
@@ -39,19 +41,21 @@ class TrainerServiceTest {
         Trainer savedTrainer = trainerService.save(trainer);
 
         // Find the trainer by id
-        assertTrue(trainerService.getById (savedTrainer.getId()).isPresent());
+        boolean present = trainerService.getById(savedTrainer.getId()).isPresent();
+        assertTrue(present);
 
         // Find all trainers
-        assertFalse(trainerService.getAll ().isEmpty());
+        assertFalse(trainerService.getAll().isEmpty());
 
         // Update the trainer
         savedTrainer.setFirstName("Jane");
         trainerService.save(savedTrainer);
 
-        Assertions.assertEquals("Jane", trainerService.getById (savedTrainer.getId()).get().getFirstName());
+        String trainerFirstName = trainerService.getById(savedTrainer.getId()).get().getFirstName();
+        Assertions.assertEquals("Jane", trainerFirstName);
 
         // Delete the trainer by id
-        assertThrows(UnsupportedOperationException.class, () -> trainerService.deleteById(savedTrainer.getId()));
+        assertThrows(UnsupportedOperationException.class, () -> trainerService.deleteById(1L));
 
     }
 
@@ -67,6 +71,6 @@ class TrainerServiceTest {
 
     @Test
     void givenWrongId_whenFindById_thenReturnOptionalEmpty(){
-        assertTrue(trainerService.getById (null).isEmpty());
+        assertEquals(Optional.empty(), trainerService.getById(null));
     }
 }

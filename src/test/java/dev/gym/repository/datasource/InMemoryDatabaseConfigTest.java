@@ -8,7 +8,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringJUnitConfig(classes = RepositoryConfig.class)
 class InMemoryDatabaseConfigTest {
@@ -24,11 +24,11 @@ class InMemoryDatabaseConfigTest {
         var training = context.getBean("trainingStore", Map.class);
         var username = context.getBean("usernameStore", Map.class);
 
-        int expectedSize = 0;
-        assertTrue(trainer.size() > expectedSize);
-        assertTrue(trainee.size() > expectedSize);
-        assertTrue(training.size() > expectedSize);
-        assertTrue(username.size() > expectedSize);
+        int expected = 10;
+        assertEquals(expected, trainer.size());
+        assertEquals(expected, trainee.size());
+        assertEquals(expected, training.size());
+        assertEquals(20, username.size());
     }
 
 }

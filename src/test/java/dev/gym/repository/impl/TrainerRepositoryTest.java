@@ -78,7 +78,8 @@ class TrainerRepositoryTest {
 
         // Then
         assertTrue(trainerRepository.getData().containsKey(trainer.getId()));
-        assertEquals(UPDATED_FIRST_NAME, trainerRepository.getData().get(trainer.getId()).getFirstName());
+        assertEquals(UPDATED_FIRST_NAME,
+                trainerRepository.getData().get(trainer.getId()).getFirstName());
     }
 
     @Test

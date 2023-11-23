@@ -81,12 +81,11 @@ class TraineeRepositoryTest {
         // When
         traineeRepository.save(trainee);
         String newFirstName = "Jane";
-        String UPDATED_FIRSTNAME = newFirstName;
-        trainee.setFirstName(UPDATED_FIRSTNAME);
+        trainee.setFirstName(newFirstName);
         traineeRepository.save(trainee);
 
         // Then
-        assertEquals(UPDATED_FIRSTNAME, traineeRepository.getData().get(trainee.getId()).getFirstName());
+        assertEquals(newFirstName, traineeRepository.getData().get(trainee.getId()).getFirstName());
     }
 
     @Test
