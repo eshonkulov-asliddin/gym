@@ -18,6 +18,11 @@ dependencies {
     implementation "ch.qos.logback:logback-classic:$logbackVersion"
     implementation "org.apache.commons:commons-lang3:$commonsLangVersion"
 
+    // hibernate
+    implementation "org.hibernate.orm:hibernate-core:$hibernateVersion"
+
+    // mysql
+    implementation "mysql:mysql-connector-java:$mysqlVersion"
 
     compileOnly "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
