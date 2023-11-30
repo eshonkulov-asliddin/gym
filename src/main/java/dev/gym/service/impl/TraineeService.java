@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,13 +27,13 @@ public class TraineeService implements BaseService<Trainee, Long> {
         this.traineeValidator = traineeValidator;
     }
     @Override
-    public Map<Long, Trainee> getAll() {
+    public List<Trainee> getAll() {
         return traineeRepository.findAll();
     }
 
     @Override
     public Optional<Trainee> getById(Long id) {
-        Optional<Trainee> trainee = traineeRepository.findById(id);
+        Optional<Trainee> trainee = traineeRepository.findProxyById(id);
         if (trainee.isEmpty()){
             logger.error(String.format(ExceptionMsg.NOT_FOUND_MESSAGE, "Trainee", id));
             return Optional.empty();
@@ -44,8 +44,7 @@ public class TraineeService implements BaseService<Trainee, Long> {
     @Override
     public Trainee save(Trainee entity) {
         // Validate entity
-        traineeValidator.validate (entity);
-
+        traineeValidator.validate(entity);
         return traineeRepository.save(entity);
     }
 

@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,13 +26,13 @@ public class TrainingService implements BaseService<Training, Long> {
     }
 
     @Override
-    public Map<Long, Training> getAll() {
+    public List<Training>  getAll() {
         return trainingRepository.findAll();
     }
 
     @Override
     public Optional<Training> getById(Long id) {
-        Optional<Training> training = trainingRepository.findById(id);
+        Optional<Training> training = trainingRepository.findProxyById(id);
         if ( training.isEmpty() ){
             logger.error(String.format(ExceptionMsg.NOT_FOUND_MESSAGE, "Training", id));
             return Optional.empty();
@@ -44,7 +44,6 @@ public class TrainingService implements BaseService<Training, Long> {
     public Training save(Training entity) {
         // Validate entity
         trainingValidator.validate(entity);
-
         return trainingRepository.save(entity);
     }
 
