@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,13 +27,13 @@ public class TrainerService implements BaseService<Trainer, Long> {
     }
 
     @Override
-    public Map<Long, Trainer> getAll() {
+    public List<Trainer> getAll() {
         return trainerRepository.findAll();
     }
 
     @Override
     public Optional<Trainer> getById(Long id) {
-        Optional<Trainer> trainer = trainerRepository.findById(id);
+        Optional<Trainer> trainer = trainerRepository.findProxyById(id);
         if ( trainer.isEmpty() ){
             logger.error(String.format(ExceptionMsg.NOT_FOUND_MESSAGE, "Trainer", id));
             return Optional.empty();
