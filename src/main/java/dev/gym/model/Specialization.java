@@ -1,23 +1,38 @@
 package dev.gym.model;
 
+import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@Entity
 public class Specialization{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "specialization_type_name")
     private String specializationTypeName;
 
-    // ID generator
-    private static AtomicLong idGenerator = new AtomicLong(1);
+    @OneToMany(
+            mappedBy = "specialization",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Trainer> trainerList = new ArrayList<>();
 
-    public Specialization(String specializationTypeName){
-        this.id = idGenerator.getAndIncrement();
-        this.specializationTypeName = specializationTypeName;
+
+    public void addTrainer(Trainer trainer){
+        trainerList.add(trainer);
+        trainer.setSpecialization(this);
+    }
+
+    public void removeTrainer(Trainer trainer){
+        trainerList.remove(trainer);
+        trainer.setSpecialization(null);
     }
 }

@@ -1,37 +1,34 @@
 package dev.gym.model;
 
+import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Data
-@NoArgsConstructor
+@Entity
 public class Training implements BaseEntity<Long> {
-    private Long id; //PK
-    private Trainee trainee; //FK
-    private Trainer trainer; //FK
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Trainee trainee;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Trainer trainer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TrainingType trainingType;
+
+    @Column(name = "training_name", nullable = false)
     private String trainingName;
-    private TrainingType trainingType; //FK
+
+    @Column(name = "training_date", nullable = false)
     private LocalDate trainingDate;
+
+    @Column(name = "training_duration", nullable = false)
     private int trainingDuration;
 
-    // ID generator
-    private static AtomicLong idGenerator = new AtomicLong(1);
-
-    public Training(Trainee trainee,
-                    Trainer trainer,
-                    String trainingName,
-                    TrainingType trainingType,
-                    LocalDate trainingDate,
-                    int trainingDuration){
-        this.id = idGenerator.getAndIncrement();
-        this.trainee = trainee;
-        this.trainer = trainer;
-        this.trainingName = trainingName;
-        this.trainingType = trainingType;
-        this.trainingDate = trainingDate;
-        this.trainingDuration = trainingDuration;
-    }
 }

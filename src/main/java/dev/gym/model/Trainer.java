@@ -1,33 +1,34 @@
 package dev.gym.model;
 
-import dev.gym.repository.datasource.credential.CredentialGenerator;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.ArrayList;
+import java.util.List;
 
 
-@Data
 @EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
+@Data
+@Entity
 public class Trainer extends User {
-    private Long id; //PK
-    private Specialization specialization; //FK
 
-    // ID generator
-    private static AtomicLong idGenerator = new AtomicLong(1);
-    public Trainer(String firstName,
-                   String lastName,
-                   CredentialGenerator credentialGenerator,
-                   boolean isActive,
-                   Specialization specialization) {
-        super(firstName,
-                lastName,
-                credentialGenerator.generateUsername(firstName, lastName),
-                credentialGenerator.generatePassword(),
-                isActive);
-        this.id = idGenerator.getAndIncrement();
-        this.specialization = specialization;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Specialization specialization;
+
+    @OneToMany(
+            mappedBy = "trainer",
+            orphanRemoval = true,
+            cascade = CascadeType.ALL
+    )
+    private List<Training> trainingList = new ArrayList<>();
+
+    public void addTraining(Training training){
+        trainingList.add(training);
+        training.setTrainer(this);
+    }
+    public void removeTraining(Training training){
+        trainingList.remove(training);
+        training.setTrainer(null);
     }
 }
