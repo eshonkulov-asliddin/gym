@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'jacoco'
+    id "io.freefair.lombok" version "8.4"
 }
 
 group = 'dev.gym'
@@ -24,11 +25,17 @@ dependencies {
     // mysql
     implementation "mysql:mysql-connector-java:$mysqlVersion"
 
+    // mapstruct
+    implementation "org.mapstruct:mapstruct:$mapstructVersion"
+    annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
+
+
     compileOnly "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
     testCompileOnly "org.projectlombok:lombok:$lombokVersion"
     testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiterVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$jupiterVersion"
