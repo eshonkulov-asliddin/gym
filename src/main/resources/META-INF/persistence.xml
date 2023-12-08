@@ -21,8 +21,13 @@
             <property name="jakarta.persistence.jdbc.driver"
                       value="com.mysql.jdbc.Driver" />
 
+            <!-- Database used for production-->
             <property name="jakarta.persistence.jdbc.url"
                       value="jdbc:mysql://localhost:3306/gym_db" />
+
+            <!-- Database used for testing-->
+<!--            <property name="jakarta.persistence.jdbc.url"-->
+<!--                      value="jdbc:mysql://localhost:3306/gym_test_db" />-->
 
             <property name="jakarta.persistence.jdbc.user"
                       value="user" />
@@ -40,7 +45,7 @@
                       value="true"/>
 
             <property name="hibernate.hbm2ddl.auto"
-                      value="create" />
+                      value="update" />
         </properties>
 
     </persistence-unit>
