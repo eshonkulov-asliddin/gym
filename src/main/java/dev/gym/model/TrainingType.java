@@ -1,6 +1,15 @@
 package dev.gym.model;
 
-import jakarta.persistence.*;
+import dev.gym.model.enums.TrainingTypeEnum;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,23 +25,20 @@ public class TrainingType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "training_type_name")
-    private String trainingTypeName;
+    @Column(name = "training_type_name", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TrainingTypeEnum trainingTypeName;
 
-    @OneToMany(
-            mappedBy = "trainingType",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
+    @OneToMany(mappedBy = "trainingType", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Training> trainingList = new ArrayList<>();
 
-    public void addTraining(Training training){
+    public void addTraining(Training training) {
         trainingList.add(training);
         training.setTrainingType(this);
     }
 
-    public void removeTraining(Training training){
-        trainingList.remove(training);
+    public void removeTraining(Training training) {
         training.setTrainingType(null);
+        trainingList.remove(training);
     }
 }

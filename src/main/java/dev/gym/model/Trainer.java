@@ -1,34 +1,43 @@
 package dev.gym.model;
 
-import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
 @Entity
 public class Trainer extends User {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Specialization specialization;
 
-    @OneToMany(
-            mappedBy = "trainer",
-            orphanRemoval = true,
-            cascade = CascadeType.ALL
-    )
+    @OneToMany(mappedBy = "trainer", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Training> trainingList = new ArrayList<>();
 
-    public void addTraining(Training training){
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "Trainer_Trainee", joinColumns = @JoinColumn(name = "trainer_id"), inverseJoinColumns = @JoinColumn(name = "trainee_id"))
+    private Set<Trainee> trainees = new HashSet<>();
+
+    public void addTraining(Training training) {
         trainingList.add(training);
         training.setTrainer(this);
     }
-    public void removeTraining(Training training){
-        trainingList.remove(training);
+
+    public void removeTraining(Training training) {
         training.setTrainer(null);
+        trainingList.remove(training);
     }
 }
