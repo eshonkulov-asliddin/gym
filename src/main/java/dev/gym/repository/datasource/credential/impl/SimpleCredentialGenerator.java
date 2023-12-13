@@ -4,21 +4,21 @@ import dev.gym.repository.datasource.credential.CredentialGenerator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 
 @Component
+@RequiredArgsConstructor
 public class SimpleCredentialGenerator implements CredentialGenerator {
-    public static final String DELIMITER = ".";
-    private final EntityManagerFactory entityManagerFactory;
 
-    @Autowired
-    public SimpleCredentialGenerator(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-    }
+    public static final String DELIMITER = ".";
+    public final Logger logger = LoggerFactory.getLogger(SimpleCredentialGenerator.class);
+    private final EntityManagerFactory entityManagerFactory;
 
     @Override
     public String generateUsername(String firstName, String lastName) {
@@ -30,6 +30,7 @@ public class SimpleCredentialGenerator implements CredentialGenerator {
                     .setParameter("username", baseUsername + "%")
                     .getResultList());
         } catch (PersistenceException e) {
+            logger.error("Error while generating username", e);
             e.printStackTrace();
         }
         int count = 0;
