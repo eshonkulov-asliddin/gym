@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringJUnitConfig(classes = AppConfig.class)
-class TrainingRepositoryTest {
+class TrainingRepositoryIT {
 
     @Autowired
     protected AbstractCrudRepository<Training, Long> trainingRepository;
