@@ -13,6 +13,6 @@ public interface CrudRepository<T, K> {
 
     boolean delete(K id);
 
-    Optional<T> findReferenceById(K id);
+    boolean existById(K id);
 
 }
