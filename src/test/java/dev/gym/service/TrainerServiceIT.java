@@ -1,10 +1,11 @@
 package dev.gym.service;
 
 import dev.gym.config.AppConfig;
-import dev.gym.service.dto.SpecializationDto;
 import dev.gym.service.dto.TrainerDtoRequest;
 import dev.gym.service.dto.TrainerDtoResponse;
-import dev.gym.service.impl.TrainerServiceImpl;
+import dev.gym.service.dto.TrainingTypeDto;
+import dev.gym.service.impl.TrainerService;
+import jakarta.persistence.NoResultException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -17,12 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringJUnitConfig(classes = AppConfig.class)
-class TrainerServiceImplTest {
+class TrainerServiceIT {
 
-    private final TrainerServiceImpl trainerServiceImpl;
+    private final TrainerService trainerServiceImpl;
 
     @Autowired
-    TrainerServiceImplTest(TrainerServiceImpl trainerServiceImpl) {
+    TrainerServiceIT(TrainerService trainerServiceImpl) {
         this.trainerServiceImpl = trainerServiceImpl;
     }
 
@@ -32,7 +33,7 @@ class TrainerServiceImplTest {
         String firstName = "John";
         String lastName = "Doe";
 
-        SpecializationDto specialization = new SpecializationDto("Bodybuilding");
+        TrainingTypeDto specialization = new TrainingTypeDto("STRENGTH");
 
         // Create a new trainerDtoRequest
         TrainerDtoRequest trainerDtoRequest = new TrainerDtoRequest(firstName, lastName, specialization);
@@ -53,7 +54,7 @@ class TrainerServiceImplTest {
 
         // Delete the trainer by username
         trainerServiceImpl.deleteByUsername(username);
-        assertTrue(trainerServiceImpl.getByUsername(username).isEmpty());
+        assertThrows(NoResultException.class, () -> trainerServiceImpl.getByUsername(username));
     }
 
     @Test

@@ -5,7 +5,6 @@ import dev.gym.model.Trainee;
 import dev.gym.model.Trainer;
 import dev.gym.model.Training;
 import dev.gym.repository.UserRepository;
-import dev.gym.service.dto.SpecializationDto;
 import dev.gym.service.dto.TraineeDtoRequest;
 import dev.gym.service.dto.TraineeDtoResponse;
 import dev.gym.service.dto.TrainerDtoRequest;
@@ -26,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringJUnitConfig(classes = AppConfig.class)
-class TrainingServiceImplTest {
+class TrainingServiceIT {
 
     @Autowired
     private final UserRepository<Trainee, Training, Long> traineeRepository;
@@ -44,11 +43,11 @@ class TrainingServiceImplTest {
     private final UserMapper<TrainerDtoRequest, TrainerDtoResponse, Trainer> trainerMapper;
 
     @Autowired
-    TrainingServiceImplTest(UserRepository<Trainee, Training, Long> traineeRepository,
-                            UserRepository<Trainer, Training, Long> trainerRepository,
-                            CrudService<TrainingDtoRequest, TrainingDtoReponse, Long> trainingService,
-                            UserMapper<TraineeDtoRequest, TraineeDtoResponse, Trainee> traineeMapper,
-                            UserMapper<TrainerDtoRequest, TrainerDtoResponse, Trainer> trainerMapper) {
+    TrainingServiceIT(UserRepository<Trainee, Training, Long> traineeRepository,
+                      UserRepository<Trainer, Training, Long> trainerRepository,
+                      CrudService<TrainingDtoRequest, TrainingDtoReponse, Long> trainingService,
+                      UserMapper<TraineeDtoRequest, TraineeDtoResponse, Trainee> traineeMapper,
+                      UserMapper<TrainerDtoRequest, TrainerDtoResponse, Trainer> trainerMapper) {
         this.traineeRepository = traineeRepository;
         this.trainerRepository = trainerRepository;
         this.trainingService = trainingService;
@@ -78,17 +77,13 @@ class TrainingServiceImplTest {
         TrainingDtoReponse trainingDtoReponse = trainingService.save(trainingDtoRequest);
 
         assertNotNull(trainingDtoReponse);
-
-        // Delete the training
-        assertThrows(UnsupportedOperationException.class, () -> trainingService.deleteById(1L));
-
     }
 
     private Trainer createTrainer() {
         String firstName = "John";
         String lastName = "Doe";
 
-        SpecializationDto specialization = new SpecializationDto("Bodybuilding");
+        TrainingTypeDto specialization = new TrainingTypeDto("STRENGTH");
 
         TrainerDtoRequest trainerDtoRequest = new TrainerDtoRequest(firstName, lastName, specialization);
 

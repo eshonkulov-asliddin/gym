@@ -3,7 +3,8 @@ package dev.gym.service;
 import dev.gym.config.AppConfig;
 import dev.gym.service.dto.TraineeDtoRequest;
 import dev.gym.service.dto.TraineeDtoResponse;
-import dev.gym.service.impl.TraineeServiceImpl;
+import dev.gym.service.impl.TraineeService;
+import jakarta.persistence.NoResultException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -16,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringJUnitConfig(classes = AppConfig.class)
-class TraineeServiceImplTest {
+class TraineeServiceIT {
 
-    private final TraineeServiceImpl traineeService;
+    private final TraineeService traineeService;
 
     @Autowired
-    TraineeServiceImplTest(TraineeServiceImpl traineeService) {
+    TraineeServiceIT(TraineeService traineeService) {
         this.traineeService = traineeService;
     }
 
@@ -51,7 +52,7 @@ class TraineeServiceImplTest {
 
         // Delete the trainee
         traineeService.deleteByUsername(username);
-        assertTrue(traineeService.getByUsername(username).isEmpty());
+        assertThrows(NoResultException.class, () -> traineeService.getByUsername(username));
     }
 
     @Test
@@ -61,6 +62,7 @@ class TraineeServiceImplTest {
 
         // Assert the trainee when id is null
         assertEquals(Optional.empty(), traineeService.getById(id));
+
     }
 
     @Test
