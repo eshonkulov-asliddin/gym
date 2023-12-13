@@ -22,7 +22,7 @@ import java.util.Set;
 public class Trainer extends User {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Specialization specialization;
+    private TrainingType specialization;
 
     @OneToMany(mappedBy = "trainer", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Training> trainingList = new ArrayList<>();
