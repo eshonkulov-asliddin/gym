@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
-public class TrainingValidatorImpl implements Validator<TrainingDtoRequest> {
+public class TrainingValidator implements Validator<TrainingDtoRequest> {
 
-    private final Logger logger = LoggerFactory.getLogger(TrainingValidatorImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(TrainingValidator.class);
 
     @Override
     public void validate(TrainingDtoRequest request) {
@@ -26,9 +26,9 @@ public class TrainingValidatorImpl implements Validator<TrainingDtoRequest> {
         LocalDate trainingDate = request.trainingDate();
         int trainingDuration = request.trainingDuration();
 
-        if (ObjectUtils.allNull(trainerId) || ObjectUtils.allNull(traineeId) ||
+        if (ObjectUtils.anyNull(trainerId) || ObjectUtils.anyNull(traineeId) ||
                 StringUtils.isBlank(trainingName) || StringUtils.isEmpty(trainingName) ||
-                ObjectUtils.isEmpty(trainingType) || ObjectUtils.allNull(trainingDate) || ObjectUtils.allNull(trainingDuration)) {
+                ObjectUtils.isEmpty(trainingType) || ObjectUtils.allNull(trainingDate) || trainingDuration <= 0) {
 
             logger.error(String.format(ExceptionConstants.ILLIGAL_ARGUMENT_MESSAGE, "Training"));
             throw new IllegalArgumentException(String.format(ExceptionConstants.ILLIGAL_ARGUMENT_MESSAGE, "Training"));

@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TraineeValidatorImpl implements Validator<TraineeDtoRequest> {
+public class TraineeValidator implements Validator<TraineeDtoRequest> {
 
-    private final Logger logger = LoggerFactory.getLogger(TraineeValidatorImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(TraineeValidator.class);
 
     @Override
     public void validate(TraineeDtoRequest request) {
