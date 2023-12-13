@@ -11,12 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TraineeServiceImpl extends AbstractUserService<TraineeDtoRequest, TraineeDtoResponse, Long, Trainee, Training> {
+public class TraineeService extends AbstractUserService<TraineeDtoRequest, TraineeDtoResponse, Long, Trainee, Training> {
 
     @Autowired
-    protected TraineeServiceImpl(AbstractUserRepository<Trainee, Training, Long> userRepository,
-                                 Validator<TraineeDtoRequest> traineeValidator,
-                                 UserMapper<TraineeDtoRequest, TraineeDtoResponse, Trainee> mapper) {
+    public TraineeService(AbstractUserRepository<Trainee, Training, Long> userRepository,
+                          Validator<TraineeDtoRequest> traineeValidator,
+                          UserMapper<TraineeDtoRequest, TraineeDtoResponse, Trainee> mapper) {
 
         super(userRepository, traineeValidator, mapper);
 
