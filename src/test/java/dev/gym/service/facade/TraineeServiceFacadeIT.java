@@ -14,7 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringJUnitConfig(classes = {AppConfig.class})
-class TraineeServiceFacadeTest {
+class TraineeServiceFacadeIT {
 
     @Autowired
     protected AbstractUserFacade<TraineeDtoRequest, TraineeDtoResponse, Long, Trainee, Training> traineeServiceFacade;
