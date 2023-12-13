@@ -1,6 +1,6 @@
 package dev.gym.service.mapper;
 
-import dev.gym.repository.datasource.credential.impl.SimpleCredentialGenerator;
+import dev.gym.repository.datasource.credential.CredentialGenerator;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public abstract class UserMapper<T, R, M> {
+public abstract class UserMapper<T, R, M> implements BaseMapper<T, R, M> {
 
     @Autowired
-    protected SimpleCredentialGenerator credentialsGenerator;
+    protected CredentialGenerator credentialsGenerator;
 
     public abstract List<R> modelListToDtoList(List<M> modelList);
 

@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public abstract class TrainingMapper {
+public abstract class TrainingMapper implements BaseMapper<TrainingDtoRequest, TrainingDtoReponse, Training> {
 
     @Autowired
     protected UserRepository<Trainee, Training, Long> traineeRepository;
