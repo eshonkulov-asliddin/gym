@@ -14,7 +14,6 @@
         <class>dev.gym.model.Trainee</class>
         <class>dev.gym.model.Trainer</class>
         <class>dev.gym.model.Training</class>
-        <class>dev.gym.model.Specialization</class>
         <class>dev.gym.model.TrainingType</class>
 
         <properties>
@@ -22,12 +21,12 @@
                       value="com.mysql.jdbc.Driver" />
 
             <!-- Database used for production-->
-            <property name="jakarta.persistence.jdbc.url"
-                      value="jdbc:mysql://localhost:3306/gym_db" />
+<!--            <property name="jakarta.persistence.jdbc.url"-->
+<!--                      value="jdbc:mysql://localhost:3306/gym_db" />-->
 
             <!-- Database used for testing-->
-<!--            <property name="jakarta.persistence.jdbc.url"-->
-<!--                      value="jdbc:mysql://localhost:3306/gym_test_db" />-->
+            <property name="jakarta.persistence.jdbc.url"
+                      value="jdbc:mysql://localhost:3306/gym_test_db" />
 
             <property name="jakarta.persistence.jdbc.user"
                       value="user" />
