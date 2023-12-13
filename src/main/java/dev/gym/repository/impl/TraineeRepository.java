@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class TraineeRepository extends AbstractUserRepository<Trainee, Training, Long> {
 
-    TraineeRepository(EntityManagerFactory entityManagerFactory) {
+    public TraineeRepository(EntityManagerFactory entityManagerFactory) {
         super(entityManagerFactory);
     }
 
