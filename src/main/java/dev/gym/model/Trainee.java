@@ -1,40 +1,43 @@
 package dev.gym.model;
 
-import dev.gym.repository.datasource.credential.CredentialGenerator;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
+@Getter
+@Setter
+@Entity
 public class Trainee extends User {
-    private Long id;
-    private LocalDate dateOfBirth; // optional
-    private String address; // optional
 
-    // ID generator
-    private static AtomicLong idGenerator = new AtomicLong(1);
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
 
-    @Builder
-    public Trainee(String firstName,
-                   String lastName,
-                   CredentialGenerator credentialGenerator,
-                   boolean isActive,
-                   LocalDate dateOfBirth,
-                   String address) {
-        super(firstName,
-                lastName,
-                credentialGenerator.generateUsername(firstName, lastName),
-                credentialGenerator.generatePassword(),
-                isActive);
+    @Column(name = "address")
+    private String address;
 
-        this.dateOfBirth = dateOfBirth;
-        this.address = address;
-        this.id = idGenerator.getAndIncrement();
+    @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Training> trainingList = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "trainees", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<Trainer> trainers = new HashSet<>();
+
+    public void addTraining(Training training) {
+        trainingList.add(training);
+        training.setTrainee(this);
+    }
+
+    public void removeTraining(Training training) {
+        training.setTrainee(null);
+        trainingList.remove(training);
     }
 }

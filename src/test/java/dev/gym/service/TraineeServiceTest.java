@@ -1,82 +1,66 @@
 package dev.gym.service;
 
-import dev.gym.config.AppConfig;
-import dev.gym.model.Trainee;
-import dev.gym.repository.datasource.credential.CredentialGenerator;
+import dev.gym.repository.impl.TraineeRepository;
+import dev.gym.service.dto.TraineeDtoRequest;
 import dev.gym.service.impl.TraineeService;
-import org.junit.jupiter.api.Assertions;
+import dev.gym.service.mapper.TraineeMapper;
+import dev.gym.service.validator.impl.TraineeValidator;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-@SpringJUnitConfig(classes = AppConfig.class)
 class TraineeServiceTest {
 
-    private final TraineeService      traineeService;
-    private final CredentialGenerator credentialGenerator;
-
-    @Autowired
-    TraineeServiceTest(TraineeService traineeService,
-                       CredentialGenerator credentialGenerator) {
-        this.traineeService      = traineeService;
-        this.credentialGenerator = credentialGenerator;
-    }
-
     @Test
-    void testCRUD() {
-        // fields values
-        String  firstName = "John";
-        String  lastName  = "Doe";
-        boolean isActive  = true;
+    void givenInvalidTraineeDtoRequest_whenCreate_thenThrowException() {
 
-        // Create a new trainee with Builder
-        Trainee trainee = Trainee.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .isActive(isActive)
-                .credentialGenerator(credentialGenerator)
-                .dateOfBirth(LocalDate.now())
-                .address("123 Main St.").build();
+        TraineeRepository traineeRepository = mock(TraineeRepository.class);
+        TraineeMapper traineeMapper = mock(TraineeMapper.class);
 
-        // Save the trainee
-        Trainee savedTrainee = traineeService.save(trainee);
+        TraineeValidator traineeValidator = new TraineeValidator();
+        TraineeDtoRequest traineeDtoRequest = new TraineeDtoRequest("", "", LocalDate.of(2000, 1, 1), "");
 
-        // Find the trainee by id
-        assertTrue(traineeService.getById(savedTrainee.getId()).isPresent());
+        TraineeService traineeService = new TraineeService(traineeRepository, traineeValidator, traineeMapper);
 
-        // Find all trainees
-        Assertions.assertFalse(traineeService.getAll().isEmpty());
-
-        // Update the trainee
-        savedTrainee.setFirstName("Jane");
-        traineeService.save(savedTrainee);
-
-        Assertions.assertEquals("Jane", traineeService.getById(savedTrainee.getId()).get().getFirstName());
-
-        // Delete the trainee by id
-        assertTrue(traineeService.deleteById(savedTrainee.getId()));
-    }
-
-    @Test
-    void givenWrongArguments_whenCreate_thenThrowIllegalArgumentException() {
-        // fields values
-        Trainee trainee = Trainee.builder()
-                .credentialGenerator(credentialGenerator)
-                .build();
-
-        // Save the trainee
-        Assertions.assertThrows(IllegalArgumentException.class, () -> traineeService.save(trainee));
+        assertThrows(IllegalArgumentException.class,
+                () -> traineeService.save(traineeDtoRequest)
+        );
 
     }
 
     @Test
-    void givenWrongId_whenFindById_thenReturnOptionalEmpty() {
-        assertEquals(Optional.empty(), traineeService.getById(null));
+    void givenValidId_whenDelete_thenSuccess() {
+
+        TraineeRepository traineeRepository = mock(TraineeRepository.class);
+        TraineeMapper traineeMapper = mock(TraineeMapper.class);
+        TraineeValidator traineeValidator = mock(TraineeValidator.class);
+
+        when(traineeRepository.existById(1L)).thenReturn(true);
+        when(traineeRepository.delete(1L)).thenReturn(true);
+
+        TraineeService traineeService = new TraineeService(traineeRepository, traineeValidator, traineeMapper);
+
+        assertTrue(traineeService.deleteById(1L));
+
+    }
+
+    @Test
+    void givenInvalidId_whenDelete_thenFalse() {
+
+        TraineeRepository traineeRepository = mock(TraineeRepository.class);
+        TraineeMapper traineeMapper = mock(TraineeMapper.class);
+        TraineeValidator traineeValidator = mock(TraineeValidator.class);
+
+        when(traineeRepository.existById(1L)).thenReturn(false);
+
+        TraineeService traineeService = new TraineeService(traineeRepository, traineeValidator, traineeMapper);
+
+        assertFalse(traineeService.deleteById(1L));
     }
 }
