@@ -1,37 +1,41 @@
 package dev.gym.model;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Data
-@NoArgsConstructor
-public class Training implements BaseEntity<Long> {
-    private Long id; //PK
-    private Trainee trainee; //FK
-    private Trainer trainer; //FK
+@Entity
+public class Training {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Trainee trainee;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Trainer trainer;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private TrainingType trainingType;
+
+    @Column(name = "training_name", nullable = false)
     private String trainingName;
-    private TrainingType trainingType; //FK
+
+    @Column(name = "training_date", nullable = false)
     private LocalDate trainingDate;
+
+    @Column(name = "training_duration", nullable = false)
     private int trainingDuration;
 
-    // ID generator
-    private static AtomicLong idGenerator = new AtomicLong(1);
-
-    public Training(Trainee trainee,
-                    Trainer trainer,
-                    String trainingName,
-                    TrainingType trainingType,
-                    LocalDate trainingDate,
-                    int trainingDuration){
-        this.id = idGenerator.getAndIncrement();
-        this.trainee = trainee;
-        this.trainer = trainer;
-        this.trainingName = trainingName;
-        this.trainingType = trainingType;
-        this.trainingDate = trainingDate;
-        this.trainingDuration = trainingDuration;
-    }
 }

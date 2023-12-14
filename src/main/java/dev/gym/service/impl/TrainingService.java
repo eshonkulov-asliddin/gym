@@ -1,56 +1,20 @@
 package dev.gym.service.impl;
 
 import dev.gym.model.Training;
-import dev.gym.repository.BaseRepository;
-import dev.gym.service.BaseService;
-import dev.gym.service.exception.util.ExceptionMsg;
+import dev.gym.repository.CrudRepository;
+import dev.gym.service.dto.TrainingDtoReponse;
+import dev.gym.service.dto.TrainingDtoRequest;
+import dev.gym.service.mapper.TrainingMapper;
 import dev.gym.service.validator.Validator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.Optional;
-
 @Service
-public class TrainingService implements BaseService<Training, Long> {
+public class TrainingService extends AbstractCrudService<TrainingDtoRequest, TrainingDtoReponse, Long, Training> {
 
-    private static final Logger logger = LoggerFactory.getLogger(TrainingService.class);
-    private final BaseRepository<Training, Long> trainingRepository;
-    private final Validator<Training> trainingValidator;
-
-    public TrainingService(BaseRepository<Training, Long> trainingRepository,
-                           Validator<Training> trainingValidator) {
-        this.trainingRepository = trainingRepository;
-        this.trainingValidator = trainingValidator;
+    public TrainingService(CrudRepository<Training, Long> trainingRepository,
+                           Validator<TrainingDtoRequest> trainingValidator,
+                           TrainingMapper mapper) {
+        super(trainingRepository, trainingValidator, mapper);
     }
 
-    @Override
-    public Map<Long, Training> getAll() {
-        return trainingRepository.findAll();
-    }
-
-    @Override
-    public Optional<Training> getById(Long id) {
-        Optional<Training> training = trainingRepository.findById(id);
-        if ( training.isEmpty() ){
-            logger.error(String.format(ExceptionMsg.NOT_FOUND_MESSAGE, "Training", id));
-            return Optional.empty();
-        }
-        return training;
-    }
-
-    @Override
-    public Training save(Training entity) {
-        // Validate entity
-        trainingValidator.validate(entity);
-
-        return trainingRepository.save(entity);
-    }
-
-    @Override
-    public boolean deleteById(Long id) {
-        logger.info("Delete training is not supported yet");
-        throw new UnsupportedOperationException("Delete training is not supported yet");
-    }
 }
