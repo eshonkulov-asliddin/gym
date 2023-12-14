@@ -66,7 +66,7 @@ public abstract class AbstractUserRepository<T extends User, L, K> extends Abstr
     public List<L> findAllTrainingsByUsername(String username) {
         return executeInTransaction(entityManagerFactory, entityManager -> {
             logger.info("Find all trainings for user with username {}", username);
-            String query = String.format("SELECT t FROM %s t JOIN FETCH t.%s WHERE t.%s.username = :username", entityClass.getSimpleName(), entityClass.getSimpleName().toLowerCase(), entityClass.getSimpleName().toLowerCase());
+            String query = String.format("SELECT t FROM %s t JOIN FETCH t.%s WHERE t.%s.username = :username", trainingClass.getSimpleName(), entityClass.getSimpleName().toLowerCase(), entityClass.getSimpleName().toLowerCase());
             return entityManager.createQuery(query, trainingClass)
                     .setParameter("username", username)
                     .getResultList();

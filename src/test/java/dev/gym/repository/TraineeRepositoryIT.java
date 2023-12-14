@@ -82,7 +82,9 @@ class TraineeRepositoryIT {
         traineeRepository.deleteByUsername(savedTrainee.getUsername());
 
         // Assert the trainee is deleted
-        assertThrows(NoResultException.class, () -> traineeRepository.findByUsername(savedTrainee.getUsername()));
+        assertThrows(NoResultException.class,
+                () -> traineeRepository.findByUsername(savedTrainee.getUsername())
+        );
     }
 
     @Test
@@ -113,8 +115,9 @@ class TraineeRepositoryIT {
 
     @Test
     void givenValidUsername_whenFindAllTrainingsByUsername_thenSuccess() {
+
         Training training = createTraining();
-        assertFalse(traineeRepository.findAllTrainingsByUsername(savedTrainee.getUsername()).isEmpty());
+        assertTrue(traineeRepository.findAllTrainingsByUsername(savedTrainee.getUsername()).size() > 0);
     }
 
     private Training createTraining() {

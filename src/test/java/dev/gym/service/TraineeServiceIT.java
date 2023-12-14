@@ -52,7 +52,9 @@ class TraineeServiceIT {
 
         // Delete the trainee
         traineeService.deleteByUsername(username);
-        assertThrows(NoResultException.class, () -> traineeService.getByUsername(username));
+        assertThrows(NoResultException.class,
+                () -> traineeService.getByUsername(username)
+        );
     }
 
     @Test
@@ -71,7 +73,9 @@ class TraineeServiceIT {
         TraineeDtoRequest traineeDtoRequest = new TraineeDtoRequest(null, null, null, null);
 
         // Assert the trainee when fields are null
-        assertThrows(IllegalArgumentException.class, () -> traineeService.save(traineeDtoRequest));
+        assertThrows(IllegalArgumentException.class,
+                () -> traineeService.save(traineeDtoRequest)
+        );
     }
 
 }

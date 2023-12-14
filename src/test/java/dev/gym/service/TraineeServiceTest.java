@@ -28,7 +28,9 @@ class TraineeServiceTest {
 
         TraineeService traineeService = new TraineeService(traineeRepository, traineeValidator, traineeMapper);
 
-        assertThrows(IllegalArgumentException.class, () -> traineeService.save(traineeDtoRequest));
+        assertThrows(IllegalArgumentException.class,
+                () -> traineeService.save(traineeDtoRequest)
+        );
 
     }
 

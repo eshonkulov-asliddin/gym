@@ -13,10 +13,6 @@ public abstract class UserMapper<T, R, M> implements BaseMapper<T, R, M> {
     @Autowired
     protected CredentialGenerator credentialsGenerator;
 
-    public abstract List<R> modelListToDtoList(List<M> modelList);
-
-    public abstract R modelToDto(M model);
-
     @Mapping(target = "username", expression = "java(credentialsGenerator.generateUsername(dto.firstName(), dto.lastName()))")
     @Mapping(target = "password", expression = "java(credentialsGenerator.generatePassword())")
     public abstract M dtoToModel(T dto);

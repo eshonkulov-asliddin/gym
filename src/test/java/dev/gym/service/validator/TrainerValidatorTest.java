@@ -26,28 +26,38 @@ class TrainerValidatorTest {
     @Test
     void givenTrainerDtoRequest_whenSpecializationEmpty_thenThrowIllegalArgumentException() {
         TrainerDtoRequest trainerDtoRequest = new TrainerDtoRequest("firstName", "lastName", null);
-        assertThrows(IllegalArgumentException.class, () -> trainerValidator.validate(trainerDtoRequest));
+        assertThrows(IllegalArgumentException.class,
+                () -> trainerValidator.validate(trainerDtoRequest)
+        );
     }
 
     @Test
     void givenTrainerDtoRequest_whenFirstNameEmptyOrBlank_thenThrowIllegalArgumentException() {
         // firstName is empty
         TrainerDtoRequest dtoWithNullFirstName = new TrainerDtoRequest(null, "lastName", new TrainingTypeDto("STRENGTH"));
-        assertThrows(IllegalArgumentException.class, () -> trainerValidator.validate(dtoWithNullFirstName));
+        assertThrows(IllegalArgumentException.class,
+                () -> trainerValidator.validate(dtoWithNullFirstName)
+        );
 
         // firstName is blank
         TrainerDtoRequest dtoWithBlankFirstName = new TrainerDtoRequest("", "lastName", new TrainingTypeDto("STRENGTH"));
-        assertThrows(IllegalArgumentException.class, () -> trainerValidator.validate(dtoWithBlankFirstName));
+        assertThrows(IllegalArgumentException.class,
+                () -> trainerValidator.validate(dtoWithBlankFirstName)
+        );
     }
 
     @Test
     void givenTrainerDtoRequest_whenLastNameEmptyOrBlank_thenThrowIllegalArgumentException() {
         // lastname is empty
         TrainerDtoRequest dtoWithNullLastName = new TrainerDtoRequest("firstname", null, new TrainingTypeDto("STRENGTH"));
-        assertThrows(IllegalArgumentException.class, () -> trainerValidator.validate(dtoWithNullLastName));
+        assertThrows(IllegalArgumentException.class,
+                () -> trainerValidator.validate(dtoWithNullLastName)
+        );
 
         // lastName is blank
         TrainerDtoRequest dtoWithEmptyLastName = new TrainerDtoRequest("firstName", "", new TrainingTypeDto("STRENGTH"));
-        assertThrows(IllegalArgumentException.class, () -> trainerValidator.validate(dtoWithEmptyLastName));
+        assertThrows(IllegalArgumentException.class,
+                () -> trainerValidator.validate(dtoWithEmptyLastName)
+        );
     }
 }

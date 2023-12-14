@@ -5,6 +5,7 @@ import dev.gym.model.Training;
 import dev.gym.repository.UserRepository;
 import dev.gym.service.exception.InvalidUsernameOrPasswordException;
 import dev.gym.service.exception.util.ExceptionConstants;
+import jakarta.persistence.NoResultException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,9 +19,13 @@ public class TrainerAuthService implements AuthService<Trainer> {
 
     @Override
     public void authenticate(String username, String password) {
-        trainerRepository.findByUsername(username)
-                .filter(trainer -> trainer.getPassword().equals(password))
-                .orElseThrow(() -> new InvalidUsernameOrPasswordException(ExceptionConstants.INVALID_USERNAME_OR_PASSWORD_MESSAGE));
+        try {
+            trainerRepository.findByUsername(username)
+                    .filter(trainer -> trainer.getPassword().equals(password))
+                    .orElseThrow(() -> new InvalidUsernameOrPasswordException(ExceptionConstants.INVALID_USERNAME_OR_PASSWORD_MESSAGE));
+        } catch (NoResultException e){
+            throw new InvalidUsernameOrPasswordException(ExceptionConstants.INVALID_USERNAME_OR_PASSWORD_MESSAGE);
+        }
     }
 
 }

@@ -17,7 +17,9 @@ import java.util.HashSet;
 public class SimpleCredentialGenerator implements CredentialGenerator {
 
     public static final String DELIMITER = ".";
+
     public final Logger logger = LoggerFactory.getLogger(SimpleCredentialGenerator.class);
+
     private final EntityManagerFactory entityManagerFactory;
 
     @Override

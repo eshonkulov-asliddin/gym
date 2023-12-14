@@ -24,7 +24,9 @@ class TraineeServiceFacadeIT {
         String USERNAME = "wrongUsername";
         String PASSWORD = "wrongPassword";
 
-        assertThrows(InvalidUsernameOrPasswordException.class, () -> traineeServiceFacade.getAll(USERNAME, PASSWORD));
+        assertThrows(InvalidUsernameOrPasswordException.class,
+                () -> traineeServiceFacade.getAll(USERNAME, PASSWORD)
+        );
     }
 
 }

@@ -54,7 +54,9 @@ class TrainerServiceIT {
 
         // Delete the trainer by username
         trainerServiceImpl.deleteByUsername(username);
-        assertThrows(NoResultException.class, () -> trainerServiceImpl.getByUsername(username));
+        assertThrows(NoResultException.class,
+                () -> trainerServiceImpl.getByUsername(username)
+        );
     }
 
     @Test
@@ -63,7 +65,9 @@ class TrainerServiceIT {
         TrainerDtoRequest trainer = new TrainerDtoRequest(null, null, null);
 
         // Save the trainer
-        assertThrows(IllegalArgumentException.class, () -> trainerServiceImpl.save(trainer));
+        assertThrows(IllegalArgumentException.class,
+                () -> trainerServiceImpl.save(trainer)
+        );
 
     }
 

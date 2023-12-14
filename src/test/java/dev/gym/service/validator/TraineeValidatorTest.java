@@ -27,11 +27,15 @@ class TraineeValidatorTest {
 
         // firstName is empty
         TraineeDtoRequest dtoWithNullFirstName = new TraineeDtoRequest(null, "lastname", null, "");
-        assertThrows(IllegalArgumentException.class, () -> traineeValidator.validate(dtoWithNullFirstName));
+        assertThrows(IllegalArgumentException.class,
+                () -> traineeValidator.validate(dtoWithNullFirstName)
+        );
 
         // firstName is blank
         TraineeDtoRequest dtoWithBlankFirstName = new TraineeDtoRequest("", "lastname", null, "");
-        assertThrows(IllegalArgumentException.class, () -> traineeValidator.validate(dtoWithBlankFirstName));
+        assertThrows(IllegalArgumentException.class,
+                () -> traineeValidator.validate(dtoWithBlankFirstName)
+        );
     }
 
     @Test
@@ -39,10 +43,14 @@ class TraineeValidatorTest {
 
         // lastName is empty
         TraineeDtoRequest dtoWithEmptyLastName = new TraineeDtoRequest("firstname", null, null, "");
-        assertThrows(IllegalArgumentException.class, () -> traineeValidator.validate(dtoWithEmptyLastName));
+        assertThrows(IllegalArgumentException.class,
+                () -> traineeValidator.validate(dtoWithEmptyLastName)
+        );
 
         // lastName is blank
         TraineeDtoRequest dtoWithBlankLastName = new TraineeDtoRequest("firstname", "", null, "");
-        assertThrows(IllegalArgumentException.class, () -> traineeValidator.validate(dtoWithBlankLastName));
+        assertThrows(IllegalArgumentException.class,
+                () -> traineeValidator.validate(dtoWithBlankLastName)
+        );
     }
 }

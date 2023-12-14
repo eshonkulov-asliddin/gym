@@ -2,6 +2,7 @@ package dev.gym.service.facade.impl;
 
 import dev.gym.service.UserService;
 import dev.gym.service.authentication.AuthService;
+import dev.gym.service.exception.InvalidUsernameOrPasswordException;
 import dev.gym.service.facade.UserFacade;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,7 @@ public abstract class AbstractUserFacade<T, R, K, E, L> implements UserFacade<T,
     }
 
     @Override
-    public List<R> getAll(String username, String password) {
+    public List<R> getAll(String username, String password) throws InvalidUsernameOrPasswordException {
         authService.authenticate(username, password);
         return userService.getAll();
     }

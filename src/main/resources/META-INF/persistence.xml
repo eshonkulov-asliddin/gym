@@ -29,10 +29,10 @@
                       value="jdbc:mysql://localhost:3306/gym_test_db" />
 
             <property name="jakarta.persistence.jdbc.user"
-                      value="user" />
+                      value="root" />
 
             <property name="jakarta.persistence.jdbc.password"
-                      value="password" />
+                      value="asldevMYSQL2002" />
 
             <property name="hibernate.show_sql"
                       value="true" />

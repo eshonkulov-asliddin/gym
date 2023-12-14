@@ -30,8 +30,9 @@ public class TrainingValidator implements Validator<TrainingDtoRequest> {
                 StringUtils.isBlank(trainingName) || StringUtils.isEmpty(trainingName) ||
                 ObjectUtils.isEmpty(trainingType) || ObjectUtils.allNull(trainingDate) || trainingDuration <= 0) {
 
-            logger.error(String.format(ExceptionConstants.ILLIGAL_ARGUMENT_MESSAGE, "Training"));
-            throw new IllegalArgumentException(String.format(ExceptionConstants.ILLIGAL_ARGUMENT_MESSAGE, "Training"));
+            String msg = String.format(ExceptionConstants.ILLIGAL_ARGUMENT_MESSAGE, "Training");
+            logger.error(msg);
+            throw new IllegalArgumentException(msg);
 
         }
     }

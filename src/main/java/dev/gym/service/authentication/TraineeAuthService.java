@@ -6,6 +6,7 @@ import dev.gym.repository.UserRepository;
 import dev.gym.repository.impl.TraineeRepository;
 import dev.gym.service.exception.InvalidUsernameOrPasswordException;
 import dev.gym.service.exception.util.ExceptionConstants;
+import jakarta.persistence.NoResultException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,9 +20,13 @@ public class TraineeAuthService implements AuthService<Trainee> {
 
     @Override
     public void authenticate(String username, String password) {
-        traineeRepository.findByUsername(username)
-                .filter(trainee -> trainee.getPassword().equals(password))
-                .orElseThrow(() -> new InvalidUsernameOrPasswordException(ExceptionConstants.INVALID_USERNAME_OR_PASSWORD_MESSAGE));
+        try {
+            traineeRepository.findByUsername(username)
+                    .filter(trainee -> trainee.getPassword().equals(password))
+                    .orElseThrow(() -> new InvalidUsernameOrPasswordException(ExceptionConstants.INVALID_USERNAME_OR_PASSWORD_MESSAGE));
+        } catch (NoResultException e){
+            throw new InvalidUsernameOrPasswordException(ExceptionConstants.INVALID_USERNAME_OR_PASSWORD_MESSAGE);
+        }
     }
 
 }

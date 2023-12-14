@@ -111,7 +111,9 @@ class TrainingServiceIT {
         TrainingDtoRequest trainingDtoRequest = new TrainingDtoRequest(null, null, null, null, null, 0);
 
         // Assert the training when fields are null
-        assertThrows(IllegalArgumentException.class, () -> trainingService.save(trainingDtoRequest));
+        assertThrows(IllegalArgumentException.class,
+                () -> trainingService.save(trainingDtoRequest)
+        );
 
     }
 

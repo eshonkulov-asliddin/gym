@@ -24,7 +24,9 @@ class TrainerServiceFacadeIT {
         String USERNAME = "wrongUsername";
         String PASSWORD = "wrongPassword";
 
-        assertThrows(InvalidUsernameOrPasswordException.class, () -> trainerServiceFacade.deleteByUsername(USERNAME, PASSWORD));
+        assertThrows(InvalidUsernameOrPasswordException.class,
+                () -> trainerServiceFacade.deleteByUsername(USERNAME, PASSWORD)
+        );
     }
 
 }

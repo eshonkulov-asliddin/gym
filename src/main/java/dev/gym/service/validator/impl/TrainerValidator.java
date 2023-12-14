@@ -25,8 +25,9 @@ public class TrainerValidator implements Validator<TrainerDtoRequest> {
                 StringUtils.isBlank(lastName) || StringUtils.isEmpty(lastName) ||
                 ObjectUtils.anyNull(specialization) || ObjectUtils.isEmpty(specialization) ) {
 
-            logger.error(String.format(ExceptionConstants.ILLIGAL_ARGUMENT_MESSAGE, "Trainer"));
-            throw new IllegalArgumentException(String.format(ExceptionConstants.ILLIGAL_ARGUMENT_MESSAGE, "Trainer"));
+            String msg = String.format(ExceptionConstants.ILLIGAL_ARGUMENT_MESSAGE, "Trainer");
+            logger.error(msg);
+            throw new IllegalArgumentException(msg);
         }
     }
 

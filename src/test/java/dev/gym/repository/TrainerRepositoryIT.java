@@ -9,6 +9,7 @@ import dev.gym.model.enums.TrainingTypeEnum;
 import dev.gym.repository.datasource.credential.CredentialGenerator;
 import dev.gym.repository.impl.AbstractCrudRepository;
 import dev.gym.repository.impl.AbstractUserRepository;
+import jakarta.persistence.NoResultException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringJUnitConfig(classes = AppConfig.class)
@@ -70,8 +72,9 @@ class TrainerRepositoryIT {
     @Test
     void givenValidUsername_whenDeleteByUsername_thenDelete() {
         trainerRepository.deleteByUsername(savedTrainer.getUsername());
-        Optional<Trainer> byUsername = trainerRepository.findByUsername(savedTrainer.getUsername());
-        assertTrue(byUsername.isEmpty());
+        assertThrows(NoResultException.class,
+                () -> trainerRepository.findByUsername(savedTrainer.getUsername())
+        );
     }
 
     @Test
@@ -93,9 +96,10 @@ class TrainerRepositoryIT {
     }
 
     @Test
-    void givenInValidUsername_whenFindByUsername_thenEmpty() {
-        Optional<Trainer> byUsername = trainerRepository.findByUsername("invalid");
-        assertTrue(byUsername.isEmpty());
+    void givenInValidUsername_whenFindByUsername_thenThrowNoResultException() {
+        assertThrows(NoResultException.class,
+                () -> trainerRepository.findByUsername("invalid")
+        );
     }
 
     @Test

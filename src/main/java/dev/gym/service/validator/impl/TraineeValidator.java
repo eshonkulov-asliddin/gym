@@ -21,8 +21,9 @@ public class TraineeValidator implements Validator<TraineeDtoRequest> {
         if (StringUtils.isBlank(firstName) || StringUtils.isEmpty(firstName) ||
                 StringUtils.isBlank(lastName) || StringUtils.isEmpty(lastName)) {
 
-            logger.error(String.format(ExceptionConstants.ILLIGAL_ARGUMENT_MESSAGE, "Trainee"));
-            throw new IllegalArgumentException(String.format(ExceptionConstants.ILLIGAL_ARGUMENT_MESSAGE, "Trainee"));
+            String msg = String.format(ExceptionConstants.ILLIGAL_ARGUMENT_MESSAGE, "Trainee");
+            logger.error(msg);
+            throw new IllegalArgumentException(msg);
         }
     }
 
