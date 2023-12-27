@@ -1,23 +1,21 @@
 package dev.gym.service.facade;
 
-import dev.gym.config.AppConfig;
-import dev.gym.model.Trainer;
-import dev.gym.model.Training;
-import dev.gym.service.dto.TrainerDtoRequest;
-import dev.gym.service.dto.TrainerDtoResponse;
+import dev.gym.repository.config.RepositoryConfig;
+import dev.gym.security.config.SecurityConfig;
+import dev.gym.service.config.ServiceConfig;
 import dev.gym.service.exception.InvalidUsernameOrPasswordException;
-import dev.gym.service.facade.impl.AbstractUserFacade;
+import dev.gym.service.facade.impl.TrainerServiceFacade;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringJUnitConfig(classes = {AppConfig.class})
-class TrainerServiceFacadeIT {
+@SpringJUnitConfig(classes = {ServiceConfig.class, RepositoryConfig.class, SecurityConfig.class})
+class TrainerServiceImplFacadeIT {
 
     @Autowired
-    protected AbstractUserFacade<TrainerDtoRequest, TrainerDtoResponse, Long, Trainer, Training> trainerServiceFacade;
+    protected TrainerServiceFacade trainerServiceFacade;
 
     @Test
     void givenWrongUsernameAndPassword_whenDelete_thenThrowInvalidUsernameOrPasswordException() {
@@ -28,5 +26,4 @@ class TrainerServiceFacadeIT {
                 () -> trainerServiceFacade.deleteByUsername(USERNAME, PASSWORD)
         );
     }
-
 }

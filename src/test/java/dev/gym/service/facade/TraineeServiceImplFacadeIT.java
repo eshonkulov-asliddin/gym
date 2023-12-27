@@ -1,23 +1,21 @@
 package dev.gym.service.facade;
 
-import dev.gym.config.AppConfig;
-import dev.gym.model.Trainee;
-import dev.gym.model.Training;
-import dev.gym.service.dto.TraineeDtoRequest;
-import dev.gym.service.dto.TraineeDtoResponse;
+import dev.gym.repository.config.RepositoryConfig;
+import dev.gym.security.config.SecurityConfig;
+import dev.gym.service.config.ServiceConfig;
 import dev.gym.service.exception.InvalidUsernameOrPasswordException;
-import dev.gym.service.facade.impl.AbstractUserFacade;
+import dev.gym.service.facade.impl.TraineeServiceFacade;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringJUnitConfig(classes = {AppConfig.class})
-class TraineeServiceFacadeIT {
+@SpringJUnitConfig(classes = {ServiceConfig.class, RepositoryConfig.class, SecurityConfig.class})
+class TraineeServiceImplFacadeIT {
 
     @Autowired
-    protected AbstractUserFacade<TraineeDtoRequest, TraineeDtoResponse, Long, Trainee, Training> traineeServiceFacade;
+    protected TraineeServiceFacade traineeServiceFacade;
 
     @Test
     void givenWrongUsernameAndPassword_whenGetAll_thenThrowInvalidUsernameOrPasswordException() {
@@ -28,5 +26,4 @@ class TraineeServiceFacadeIT {
                 () -> traineeServiceFacade.getAll(USERNAME, PASSWORD)
         );
     }
-
 }
