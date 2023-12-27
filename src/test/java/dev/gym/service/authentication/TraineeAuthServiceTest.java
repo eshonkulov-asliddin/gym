@@ -1,7 +1,8 @@
 package dev.gym.service.authentication;
 
-import dev.gym.model.Trainee;
-import dev.gym.repository.impl.TraineeRepository;
+import dev.gym.repository.impl.UserRepositoryImpl;
+import dev.gym.repository.model.Trainee;
+import dev.gym.security.authentication.UserAuthService;
 import dev.gym.service.exception.InvalidUsernameOrPasswordException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,30 +15,30 @@ import static org.mockito.Mockito.when;
 
 class TraineeAuthServiceTest {
 
-    static TraineeRepository traineeRepository;
     static Trainee trainee;
-    static TraineeAuthService traineeAuthService;
+    static UserAuthService traineeAuthService;
+    static UserRepositoryImpl traineeRepositoryImpl;
 
 
     @BeforeAll
     static void setup() {
-        traineeRepository = mock(TraineeRepository.class);
+        traineeRepositoryImpl = mock(UserRepositoryImpl.class);
         trainee = mock(Trainee.class);
-        traineeAuthService = new TraineeAuthService(traineeRepository);
+        traineeAuthService = new UserAuthService(traineeRepositoryImpl);
 
         when(trainee.getPassword()).thenReturn("password");
-        when(traineeRepository.findByUsername("username")).thenReturn(Optional.of(trainee));
+        when(traineeRepositoryImpl.findByUsername("trainerUsername")).thenReturn(Optional.of(trainee));
     }
 
     @Test
     void givenValidUsernameAndPassword_whenAuthenticate_thenSuccess() {
-        traineeAuthService.authenticate("username", "password");
+        traineeAuthService.authenticate("trainerUsername", "password");
     }
 
     @Test
     void givenInvalidPassword_whenAuthenticate_thenThrowInvalidUsernameOrPasswordException() {
         assertThrows(InvalidUsernameOrPasswordException.class,
-                () -> traineeAuthService.authenticate("username", "wrongPassword")
+                () -> traineeAuthService.authenticate("trainerUsername", "wrongPassword")
         );
     }
 
