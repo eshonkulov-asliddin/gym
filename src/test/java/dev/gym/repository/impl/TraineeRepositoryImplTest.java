@@ -1,8 +1,7 @@
-package dev.gym.repository;
+package dev.gym.repository.impl;
 
-import dev.gym.model.Trainee;
-import dev.gym.repository.impl.AbstractCrudRepository;
-import dev.gym.repository.impl.TraineeRepository;
+import dev.gym.repository.TraineeRepository;
+import dev.gym.repository.model.Trainee;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
@@ -19,12 +18,12 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class TraineeRepositoryTest {
+class TraineeRepositoryImplTest {
 
     private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
     private EntityTransaction entityTransaction;
-    private AbstractCrudRepository<Trainee, Long> traineeRepository;
+    private TraineeRepository traineeRepository;
     private TypedQuery<Object> typedQuery;
 
     @BeforeEach
@@ -37,7 +36,7 @@ class TraineeRepositoryTest {
         when(entityManagerFactory.createEntityManager()).thenReturn(entityManager);
         when(entityManager.getTransaction()).thenReturn(entityTransaction);
 
-        traineeRepository = new TraineeRepository(entityManagerFactory);
+        traineeRepository = new TraineeRepositoryImpl(entityManagerFactory);
     }
 
     @Test
@@ -56,9 +55,7 @@ class TraineeRepositoryTest {
 
         doNothing().when(entityManager).persist(trainee);
 
-        Trainee save = traineeRepository.save(trainee);
-
-        assertEquals(save.getFirstName(), trainee.getFirstName());
+        traineeRepository.save(trainee);
     }
 
     @Test

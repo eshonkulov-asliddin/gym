@@ -1,14 +1,14 @@
-package dev.gym.repository;
+package dev.gym.repository.impl;
 
-import dev.gym.config.AppConfig;
-import dev.gym.model.Trainee;
-import dev.gym.model.Trainer;
-import dev.gym.model.Training;
-import dev.gym.model.TrainingType;
-import dev.gym.model.enums.TrainingTypeEnum;
+import dev.gym.repository.TrainerRepository;
+import dev.gym.repository.TrainingRepository;
+import dev.gym.repository.config.RepositoryConfig;
 import dev.gym.repository.datasource.credential.CredentialGenerator;
-import dev.gym.repository.impl.AbstractCrudRepository;
-import dev.gym.repository.impl.AbstractUserRepository;
+import dev.gym.repository.model.Trainee;
+import dev.gym.repository.model.Trainer;
+import dev.gym.repository.model.Training;
+import dev.gym.repository.model.TrainingType;
+import dev.gym.repository.model.enums.TrainingTypeEnum;
 import jakarta.persistence.NoResultException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,14 +24,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringJUnitConfig(classes = AppConfig.class)
-class TrainerRepositoryIT {
+@SpringJUnitConfig(classes = RepositoryConfig.class)
+class TrainerRepositoryImplIT {
 
     @Autowired
-    protected AbstractUserRepository<Trainer, Training, Long> trainerRepository;
+    protected TrainerRepository trainerRepository;
 
     @Autowired
-    protected AbstractCrudRepository<Training, Long> trainingRepository;
+    protected TrainingRepository trainingRepository;
 
     @Autowired
     protected CredentialGenerator credentialGenerator;
@@ -43,13 +43,18 @@ class TrainerRepositoryIT {
         String FIRSTNAME = "John";
         String LASTNAME = "Doe";
 
+        String generatedUsername = credentialGenerator.generateUsername(FIRSTNAME, LASTNAME);
+        String generatedPassword = credentialGenerator.generatePassword();
+
         Trainer trainee = new Trainer();
         trainee.setFirstName(FIRSTNAME);
         trainee.setLastName(LASTNAME);
-        trainee.setUsername(credentialGenerator.generateUsername(FIRSTNAME, LASTNAME));
-        trainee.setPassword(credentialGenerator.generatePassword());
+        trainee.setUsername(generatedUsername);
+        trainee.setPassword(generatedPassword);
 
-        savedTrainer = trainerRepository.save(trainee);
+        trainerRepository.save(trainee);
+        savedTrainer = trainerRepository.findByUsername(generatedUsername)
+                .orElseThrow(() -> new NoResultException("No trainer found!"));
     }
 
     @Test
@@ -78,18 +83,18 @@ class TrainerRepositoryIT {
     }
 
     @Test
-    void givenValidId_whenUpdatePassword_thenUpdate() {
+    void givenValidUsername_whenUpdatePassword_thenUpdate() {
         String newPassword = credentialGenerator.generatePassword();
-        trainerRepository.updatePassword(savedTrainer.getId(), newPassword);
+        trainerRepository.updatePassword(savedTrainer.getUsername(), newPassword);
         Optional<Trainer> byId = trainerRepository.findById(savedTrainer.getId());
         assertTrue(byId.isPresent());
         assertEquals(byId.get().getPassword(), newPassword);
     }
 
     @Test
-    void givenInvalidId_whenUpdatePassword_thenPasswordNotChanged() {
+    void givenInvalidUsername_whenUpdatePassword_thenPasswordNotChanged() {
         String newPassword = credentialGenerator.generatePassword();
-        trainerRepository.updatePassword(-1L, newPassword);
+        trainerRepository.updatePassword("username", newPassword);
         Optional<Trainer> byId = trainerRepository.findById(savedTrainer.getId());
         assertTrue(byId.isPresent());
         assertEquals(byId.get().getPassword(), savedTrainer.getPassword());
@@ -103,8 +108,8 @@ class TrainerRepositoryIT {
     }
 
     @Test
-    void whenSetActiveStatus_thenStatusChanged() {
-        trainerRepository.setActiveStatus(savedTrainer.getId(), true);
+    void givenValidTrainer_whenSetActiveStatus_thenStatusChanged() {
+        trainerRepository.setActiveStatus(savedTrainer.getUsername(), true);
         Optional<Trainer> byId = trainerRepository.findById(savedTrainer.getId());
         assertTrue(byId.isPresent());
         assertTrue(byId.get().isActive());
@@ -113,7 +118,7 @@ class TrainerRepositoryIT {
     @Test
     void givenValidUsername_whenFindAllTrainingsByUsername_thenSuccess() {
         Training training = createTraining();
-        assertFalse(trainerRepository.findAllTrainingsByUsername(savedTrainer.getUsername()).isEmpty());
+        assertFalse(trainerRepository.findAllTrainingsByUsername(savedTrainer.getUsername(), null, null, null).isEmpty());
     }
 
     private Training createTraining() {
@@ -139,7 +144,8 @@ class TrainerRepositoryIT {
         training.setTrainingType(trainingType);
         training.setTrainingDate(LocalDate.of(2024, 1, 1));
         training.setTrainingDuration(60);
-        return trainingRepository.save(training);
+        trainingRepository.save(training);
+        return trainingRepository.findById(training.getId()).orElseThrow(() -> new NoResultException("No training found!"));
     }
 
 }

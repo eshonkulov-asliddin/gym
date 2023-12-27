@@ -1,14 +1,15 @@
-package dev.gym.repository;
+package dev.gym.repository.impl;
 
-import dev.gym.config.AppConfig;
-import dev.gym.model.Trainee;
-import dev.gym.model.Trainer;
-import dev.gym.model.Training;
-import dev.gym.model.TrainingType;
-import dev.gym.model.enums.TrainingTypeEnum;
+import dev.gym.repository.TraineeRepository;
+import dev.gym.repository.TrainerRepository;
+import dev.gym.repository.config.RepositoryConfig;
 import dev.gym.repository.datasource.credential.CredentialGenerator;
-import dev.gym.repository.impl.AbstractCrudRepository;
-import dev.gym.repository.impl.AbstractUserRepository;
+import dev.gym.repository.model.Trainee;
+import dev.gym.repository.model.Trainer;
+import dev.gym.repository.model.Training;
+import dev.gym.repository.model.TrainingType;
+import dev.gym.repository.model.enums.TrainingTypeEnum;
+import jakarta.persistence.NoResultException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +20,17 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringJUnitConfig(classes = AppConfig.class)
-class TrainingRepositoryIT {
+@SpringJUnitConfig(classes = RepositoryConfig.class)
+class TrainingRepositoryImplIT {
 
     @Autowired
     protected AbstractCrudRepository<Training, Long> trainingRepository;
 
     @Autowired
-    protected AbstractUserRepository<Trainee, Training, Long> traineeRepository;
+    protected TraineeRepository traineeRepository;
 
     @Autowired
-    protected AbstractUserRepository<Trainer, Training, Long> trainerRepository;
+    protected TrainerRepository trainerRepository;
 
     @Autowired
     protected CredentialGenerator credentialGenerator;
@@ -70,7 +71,8 @@ class TrainingRepositoryIT {
         training.setTrainingType(trainingType);
         training.setTrainingDate(LocalDate.of(2024, 1, 1));
         training.setTrainingDuration(60);
-        savedTraining = trainingRepository.save(training);
+        trainingRepository.save(training);
+        savedTraining = trainingRepository.findById(training.getId()).orElseThrow(() -> new NoResultException("No training found!"));
     }
 
     @Test
