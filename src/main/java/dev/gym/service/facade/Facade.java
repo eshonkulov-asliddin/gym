@@ -3,13 +3,13 @@ package dev.gym.service.facade;
 import java.util.List;
 import java.util.Optional;
 
-public interface Facade<T, R, K> {
+public interface Facade<T, K> {
 
-    List<R> getAll(String username, String password);
+    List<T> getAll(String username, String password);
 
-    Optional<R> getById(K id, String username, String password);
+    Optional<T> getById(K id, String username, String password);
 
-    R save(T request);
+    void save(T request);
 
     boolean deleteById(K id, String username, String password);
 
