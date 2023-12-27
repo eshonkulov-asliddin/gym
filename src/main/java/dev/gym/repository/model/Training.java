@@ -1,4 +1,4 @@
-package dev.gym.model;
+package dev.gym.repository.model;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -20,10 +20,10 @@ public class Training {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Trainee trainee;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Trainer trainer;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

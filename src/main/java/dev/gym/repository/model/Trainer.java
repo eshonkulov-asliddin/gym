@@ -1,7 +1,8 @@
-package dev.gym.model;
+package dev.gym.repository.model;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -27,8 +28,12 @@ public class Trainer extends User {
     @OneToMany(mappedBy = "trainer", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Training> trainingList = new ArrayList<>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "Trainer_Trainee", joinColumns = @JoinColumn(name = "trainer_id"), inverseJoinColumns = @JoinColumn(name = "trainee_id"))
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "Trainer_Trainee",
+            joinColumns = @JoinColumn(name = "trainer_id"),
+            inverseJoinColumns = @JoinColumn(name = "trainee_id")
+    )
     private Set<Trainee> trainees = new HashSet<>();
 
     public void addTraining(Training training) {

@@ -1,8 +1,9 @@
-package dev.gym.model;
+package dev.gym.repository.model;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
@@ -26,18 +27,29 @@ public class Trainee extends User {
     private String address;
 
     @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Training> trainingList = new ArrayList<>();
+    private List<Training> trainings = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "trainees", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "trainees", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Set<Trainer> trainers = new HashSet<>();
 
     public void addTraining(Training training) {
-        trainingList.add(training);
+        trainings.add(training);
         training.setTrainee(this);
     }
 
     public void removeTraining(Training training) {
         training.setTrainee(null);
-        trainingList.remove(training);
+        trainings.remove(training);
+    }
+
+
+    public void addTrainers(List<Trainer> trainers) {
+        this.trainers.addAll(trainers);
+    }
+
+    public void update(Trainee trainee) {
+        super.update(trainee);
+        this.dateOfBirth = trainee.dateOfBirth;
+        this.address = trainee.address;
     }
 }

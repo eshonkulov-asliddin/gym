@@ -1,4 +1,4 @@
-package dev.gym.model.enums;
+package dev.gym.repository.model.enums;
 
 public enum TrainingTypeEnum {
     CARDIO,

@@ -1,4 +1,4 @@
-package dev.gym.model;
+package dev.gym.repository.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User implements Status {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
@@ -33,4 +33,10 @@ public class User implements Status {
 
     @Column(name = "is_active", nullable = false)
     protected boolean isActive;
+
+    public void update(User user) {
+        this.firstName = user.firstName;
+        this.lastName = user.lastName;
+        this.isActive = user.isActive;
+    }
 }
