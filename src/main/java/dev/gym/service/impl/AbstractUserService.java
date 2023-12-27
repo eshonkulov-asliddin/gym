@@ -1,55 +1,59 @@
 package dev.gym.service.impl;
 
-import dev.gym.model.User;
-import dev.gym.repository.impl.AbstractUserRepository;
+import dev.gym.repository.UserRepository;
+import dev.gym.repository.model.User;
 import dev.gym.service.UserService;
-import dev.gym.service.mapper.UserMapper;
-import dev.gym.service.validator.Validator;
-import org.springframework.beans.factory.annotation.Autowired;
+import dev.gym.service.exception.NotFoundException;
+import dev.gym.service.exception.util.ExceptionConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.convert.ConversionService;
 
-import java.util.List;
+import java.lang.reflect.ParameterizedType;
 import java.util.Optional;
 
-public abstract class AbstractUserService<T, R, K, M extends User, L> extends AbstractCrudService<T, R, K, M> implements UserService<T, R, K, L> {
+abstract class AbstractUserService<T, K, E extends User> extends AbstractCrudService<T, K, E> implements UserService<T, K, E> {
 
-    private final AbstractUserRepository<M, L, K> userRepository;
+    protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractUserService.class);
+    protected final UserRepository<E, K> userRepository;
+    private final ConversionService conversionService;
 
-
-    @Autowired
-    protected AbstractUserService(AbstractUserRepository<M, L, K> userRepository, Validator<T> userValidator, UserMapper<T, R, M> mapper) {
-        super(userRepository, userValidator, mapper);
+    AbstractUserService(UserRepository<E, K> userRepository, ConversionService conversionService) {
+        super(userRepository, conversionService);
         this.userRepository = userRepository;
+        this.conversionService = conversionService;
     }
 
 
     @Override
-    public Optional<R> getByUsername(String username) {
-        return userRepository.findByUsername(username).map(mapper::modelToDto);
+    public Optional<T> getByUsername(String username) {
+        checkUserExistence(username);
+        return userRepository.findByUsername(username)
+                .map(entity -> conversionService.convert(entity, getDtoClass()));
     }
 
     @Override
     public void deleteByUsername(String username) {
+        checkUserExistence(username);
         userRepository.deleteByUsername(username);
     }
 
     @Override
-    public void updatePassword(K id, String newPassword) {
-        userRepository.updatePassword(id, newPassword);
+    public void updatePassword(String username, String newPassword) {
+        checkUserExistence(username);
+        userRepository.updatePassword(username, newPassword);
     }
 
     @Override
-    public void activate(K id) {
-        userRepository.setActiveStatus(id, true);
+    public void setActiveStatus(String username, boolean activeStatus) {
+        checkUserExistence(username);
+        userRepository.setActiveStatus(username, activeStatus);
     }
 
-    @Override
-    public void deactivate(K id) {
-        userRepository.setActiveStatus(id, false);
+    private void checkUserExistence(String username) {
+        if(!userRepository.existByUsername(username)) {
+            LOGGER.info("{} with username {} not found", entityClass.getSimpleName(), username);
+            throw new NotFoundException(String.format(ExceptionConstants.NOT_FOUND_MESSAGE, entityClass.getSimpleName(), username));
+        }
     }
-
-    @Override
-    public List<L> getAllTrainingsByUsername(String username) {
-        return userRepository.findAllTrainingsByUsername(username);
-    }
-
 }
