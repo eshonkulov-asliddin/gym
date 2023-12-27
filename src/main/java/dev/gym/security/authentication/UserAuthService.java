@@ -1,32 +1,31 @@
-package dev.gym.service.authentication;
+package dev.gym.security.authentication;
 
-import dev.gym.model.Trainee;
-import dev.gym.model.Training;
 import dev.gym.repository.UserRepository;
-import dev.gym.repository.impl.TraineeRepository;
+import dev.gym.repository.model.User;
 import dev.gym.service.exception.InvalidUsernameOrPasswordException;
 import dev.gym.service.exception.util.ExceptionConstants;
 import jakarta.persistence.NoResultException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TraineeAuthService implements AuthService<Trainee> {
+public class UserAuthService implements AuthService {
 
-    private final UserRepository<Trainee, Training, Long> traineeRepository;
+    private final UserRepository<User, Long> userRepository;
 
-    public TraineeAuthService(TraineeRepository traineeRepository) {
-        this.traineeRepository = traineeRepository;
+   @Autowired
+    public UserAuthService(UserRepository<User, Long> userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public void authenticate(String username, String password) {
+    public void authenticate(String username, String password) throws InvalidUsernameOrPasswordException {
         try {
-            traineeRepository.findByUsername(username)
-                    .filter(trainee -> trainee.getPassword().equals(password))
+            userRepository.findByUsername(username)
+                    .filter(user -> user.getPassword().equals(password))
                     .orElseThrow(() -> new InvalidUsernameOrPasswordException(ExceptionConstants.INVALID_USERNAME_OR_PASSWORD_MESSAGE));
         } catch (NoResultException e){
             throw new InvalidUsernameOrPasswordException(ExceptionConstants.INVALID_USERNAME_OR_PASSWORD_MESSAGE);
         }
     }
-
 }
