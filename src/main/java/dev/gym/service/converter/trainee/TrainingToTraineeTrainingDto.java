@@ -9,11 +9,12 @@ import org.springframework.stereotype.Component;
 public class TrainingToTraineeTrainingDto implements Converter<Training, TraineeTrainingDto> {
     @Override
     public TraineeTrainingDto convert(Training source) {
-        return new TraineeTrainingDto(
+        return new TraineeTrainingDto (
                 source.getTrainingName(),
                 source.getTrainingDate(),
                 source.getTrainingType().getTrainingTypeName(),
                 source.getTrainingDuration(),
-                source.getTrainer().getUsername());
+                source.getTrainer().getUsername()
+        );
     }
 }
