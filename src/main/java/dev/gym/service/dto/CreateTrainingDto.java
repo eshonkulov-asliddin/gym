@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public record AddTrainingDto(
+public record CreateTrainingDto(
         @NotEmpty(message = "Trainee trainerUsername must not be empty")
         String traineeUsername,
         @NotEmpty(message = "Trainer trainerUsername must not be empty")
