@@ -11,10 +11,10 @@
 
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>dev.gym.model.Trainee</class>
-        <class>dev.gym.model.Trainer</class>
-        <class>dev.gym.model.Training</class>
-        <class>dev.gym.model.TrainingType</class>
+        <class>dev.gym.repository.model.Trainee</class>
+        <class>dev.gym.repository.model.Trainer</class>
+        <class>dev.gym.repository.model.Training</class>
+        <class>dev.gym.repository.model.TrainingType</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.driver"
@@ -29,10 +29,10 @@
                       value="jdbc:mysql://localhost:3306/gym_test_db" />
 
             <property name="jakarta.persistence.jdbc.user"
-                      value="root" />
+                      value="user" />
 
             <property name="jakarta.persistence.jdbc.password"
-                      value="asldevMYSQL2002" />
+                      value="password" />
 
             <property name="hibernate.show_sql"
                       value="true" />
