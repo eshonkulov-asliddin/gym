@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,16 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = RestApiConst.USER_API_ROOT_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "User API", description = "Operations to manage users")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserAuthService userAuthService;
     private final UserServiceImpl userService;
-
-    @Autowired
-    public UserController(UserAuthService userAuthService, UserServiceImpl userService) {
-        this.userAuthService = userAuthService;
-        this.userService = userService;
-    }
 
     @GetMapping("/login")
     @Operation(summary = "Authenticate user")

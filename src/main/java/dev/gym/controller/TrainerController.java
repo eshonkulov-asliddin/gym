@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,14 +33,10 @@ import static dev.gym.controller.util.RestApiConst.TRAINER_API_ROOT_PATH;
 @RestController
 @RequestMapping(value = TRAINER_API_ROOT_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Trainer API", description = "Operations to manage trainers")
+@RequiredArgsConstructor
 public class TrainerController {
 
     private final TrainerService trainerService;
-
-    @Autowired
-    public TrainerController(TrainerService trainerService) {
-        this.trainerService = trainerService;
-    }
 
     @PostMapping("/register")
     @Operation(summary = "Register a new trainer")
@@ -71,7 +67,6 @@ public class TrainerController {
     public ResponseEntity<List<TrainerDto>> getUnassignedTrainers(@RequestParam(name = "username") String username) {
         return ResponseEntity.ok(trainerService.getAllActiveUnAssignedTrainers());
     }
-
 
     @PutMapping("/{username}")
     @Operation(summary = "Update trainer profile")

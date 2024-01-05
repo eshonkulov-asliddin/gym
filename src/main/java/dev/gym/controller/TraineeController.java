@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,14 +36,10 @@ import static dev.gym.controller.util.RestApiConst.TRAINEE_API_ROOT_PATH;
 @RestController
 @RequestMapping(value = TRAINEE_API_ROOT_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Trainee API", description = "Operations to manage trainees")
+@RequiredArgsConstructor
 public class TraineeController {
 
     private final TraineeService traineeService;
-
-    @Autowired
-    public TraineeController(TraineeService traineeService) {
-        this.traineeService = traineeService;
-    }
 
     @PostMapping("/register")
     @Operation(summary = "Register a new trainee")
