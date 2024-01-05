@@ -1,16 +1,14 @@
-package dev.gym.service;
+package dev.gym.service.impl;
 
 import dev.gym.repository.config.RepositoryConfig;
-import dev.gym.repository.model.TrainingType;
 import dev.gym.repository.model.enums.TrainingTypeEnum;
 import dev.gym.security.config.SecurityConfig;
+import dev.gym.service.TrainerService;
 import dev.gym.service.config.ServiceConfig;
 import dev.gym.service.dto.RegisterTrainerDto;
 import dev.gym.service.dto.TrainerDto;
 import dev.gym.service.dto.UserDto;
 import dev.gym.service.exception.NotFoundException;
-import dev.gym.service.impl.TrainerServiceImpl;
-import jakarta.persistence.NoResultException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -37,11 +35,8 @@ class TrainerServiceImplIT {
         String firstName = "John";
         String lastName = "Doe";
 
-        TrainingType specialization = new TrainingType();
-        specialization.setTrainingTypeName(TrainingTypeEnum.STRENGTH);
-
         // Create a new trainerDtoRequest
-        RegisterTrainerDto registerTrainerDto = new RegisterTrainerDto(firstName, lastName, specialization);;
+        RegisterTrainerDto registerTrainerDto = new RegisterTrainerDto(firstName, lastName, TrainingTypeEnum.CARDIO.toString());;
 
         // Save the trainerDtoRequest
         UserDto registered = trainerService.register(registerTrainerDto);

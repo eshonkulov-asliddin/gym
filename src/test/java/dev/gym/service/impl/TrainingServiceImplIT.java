@@ -1,4 +1,4 @@
-package dev.gym.service;
+package dev.gym.service.impl;
 
 import dev.gym.repository.TraineeRepository;
 import dev.gym.repository.TrainerRepository;
@@ -8,8 +8,9 @@ import dev.gym.repository.model.Trainer;
 import dev.gym.repository.model.TrainingType;
 import dev.gym.repository.model.enums.TrainingTypeEnum;
 import dev.gym.security.config.SecurityConfig;
+import dev.gym.service.TrainingService;
 import dev.gym.service.config.ServiceConfig;
-import dev.gym.service.dto.AddTrainingDto;
+import dev.gym.service.dto.CreateTrainingDto;
 import dev.gym.service.dto.RegisterTraineeDto;
 import dev.gym.service.dto.RegisterTrainerDto;
 import dev.gym.service.exception.NotFoundException;
@@ -59,10 +60,10 @@ class TrainingServiceImplIT {
         int duration = 60;
 
 
-        AddTrainingDto addTrainingDto = new AddTrainingDto(trainee.getUsername(), trainer.getUsername(), trainingName, trainingDate, duration);
+        CreateTrainingDto createTrainingDto = new CreateTrainingDto(trainee.getUsername(), trainer.getUsername(), trainingName, trainingDate, duration);
 
         // Save the training
-        trainingService.addTraining(addTrainingDto);
+        trainingService.addTraining(createTrainingDto);
 
     }
 
@@ -70,10 +71,7 @@ class TrainingServiceImplIT {
         String firstName = "John";
         String lastName = "Doe";
 
-        TrainingType trainingType = new TrainingType();
-        trainingType.setTrainingTypeName(TrainingTypeEnum.CARDIO);
-
-        RegisterTrainerDto trainerCreateDtoRequest = new RegisterTrainerDto(firstName, lastName, trainingType);
+        RegisterTrainerDto trainerCreateDtoRequest = new RegisterTrainerDto(firstName, lastName, TrainingTypeEnum.STRENGTH.toString());
         Trainer converted = conversionService.convert(trainerCreateDtoRequest, Trainer.class);
         trainerRepository.save(converted);
         return trainerRepository.findByUsername(converted.getUsername()).orElseThrow(() -> new NotFoundException("Trainer not found"));

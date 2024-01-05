@@ -1,4 +1,4 @@
-package dev.gym.service;
+package dev.gym.service.impl;
 
 import dev.gym.repository.config.RepositoryConfig;
 import dev.gym.security.config.SecurityConfig;
@@ -7,7 +7,6 @@ import dev.gym.service.dto.RegisterTraineeDto;
 import dev.gym.service.dto.TraineeDto;
 import dev.gym.service.dto.UserDto;
 import dev.gym.service.exception.NotFoundException;
-import dev.gym.service.impl.TraineeServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
