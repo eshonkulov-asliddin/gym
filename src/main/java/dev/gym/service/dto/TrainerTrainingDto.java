@@ -11,4 +11,4 @@ public record TrainerTrainingDto (
         LocalDate trainingDate,
         TrainingTypeEnum trainingType,
         int trainingDuration,
-        String traineeName ) { }
+        String traineeUsername) { }
