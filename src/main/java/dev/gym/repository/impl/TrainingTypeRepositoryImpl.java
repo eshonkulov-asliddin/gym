@@ -2,6 +2,7 @@ package dev.gym.repository.impl;
 
 import dev.gym.repository.TrainingTypeRepository;
 import dev.gym.repository.model.TrainingType;
+import dev.gym.repository.model.enums.TrainingTypeEnum;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -25,11 +26,11 @@ public class TrainingTypeRepositoryImpl implements TrainingTypeRepository {
     }
 
     @Override
-    public TrainingType findByName(String name) {
+    public TrainingType findByType(TrainingTypeEnum trainingTypeName) {
         return executeInTransaction(entityManagerFactory, entityManager -> {
-            String query = "SELECT t FROM TrainingType t WHERE t.trainingTypeName = :name";
+            String query = "SELECT t FROM TrainingType t WHERE t.trainingTypeName = :trainingTypeName";
             return entityManager.createQuery(query, TrainingType.class)
-                    .setParameter("name", name)
+                    .setParameter("trainingTypeName", trainingTypeName)
                     .getSingleResult();
         });
     }
