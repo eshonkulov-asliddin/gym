@@ -2,12 +2,12 @@ package dev.gym.repository.impl;
 
 import dev.gym.repository.TrainerRepository;
 import dev.gym.repository.TrainingRepository;
+import dev.gym.repository.TrainingTypeRepository;
 import dev.gym.repository.config.RepositoryConfig;
 import dev.gym.repository.datasource.credential.CredentialGenerator;
 import dev.gym.repository.model.Trainee;
 import dev.gym.repository.model.Trainer;
 import dev.gym.repository.model.Training;
-import dev.gym.repository.model.TrainingType;
 import dev.gym.repository.model.enums.TrainingTypeEnum;
 import jakarta.persistence.NoResultException;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,16 +27,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringJUnitConfig(classes = RepositoryConfig.class)
 class TrainerRepositoryImplIT {
 
-    @Autowired
-    protected TrainerRepository trainerRepository;
-
-    @Autowired
-    protected TrainingRepository trainingRepository;
-
-    @Autowired
-    protected CredentialGenerator credentialGenerator;
-
+    private final TrainerRepository trainerRepository;
+    private final TrainingRepository trainingRepository;
+    private final TrainingTypeRepository trainingTypeRepository;
+    private final CredentialGenerator credentialGenerator;
     private Trainer savedTrainer;
+
+    @Autowired
+    public TrainerRepositoryImplIT(TrainerRepository trainerRepository,
+                                   TrainingRepository trainingRepository,
+                                   TrainingTypeRepository trainingTypeRepository,
+                                   CredentialGenerator credentialGenerator) {
+        this.trainerRepository = trainerRepository;
+        this.trainingRepository = trainingRepository;
+        this.trainingTypeRepository = trainingTypeRepository;
+        this.credentialGenerator = credentialGenerator;
+    }
 
     @BeforeEach
     void setUp() {
@@ -51,6 +57,7 @@ class TrainerRepositoryImplIT {
         trainee.setLastName(LASTNAME);
         trainee.setUsername(generatedUsername);
         trainee.setPassword(generatedPassword);
+        trainee.setSpecialization(trainingTypeRepository.findByType(TrainingTypeEnum.STRENGTH));
 
         trainerRepository.save(trainee);
         savedTrainer = trainerRepository.findByUsername(generatedUsername)
@@ -132,16 +139,12 @@ class TrainerRepositoryImplIT {
         trainee.setUsername(credentialGenerator.generateUsername(TRAINEE_FIRSTNAME, TRAINEE_LASTNAME));
         trainee.setPassword(credentialGenerator.generatePassword());
 
-        // Fields for TrainingType
-        TrainingType trainingType = new TrainingType();
-        trainingType.setTrainingTypeName(TrainingTypeEnum.STRENGTH);
-
 
         Training training = new Training();
         training.setTrainee(trainee);
         training.setTrainer(savedTrainer);
         training.setTrainingName("Test Training");
-        training.setTrainingType(trainingType);
+        training.setTrainingType(savedTrainer.getSpecialization());
         training.setTrainingDate(LocalDate.of(2024, 1, 1));
         training.setTrainingDuration(60);
         trainingRepository.save(training);
