@@ -24,10 +24,4 @@ public class TrainingTypeServiceImpl implements TrainingTypeService<TrainingType
                 .map(trainingType -> conversionService.convert(trainingType, TrainingTypeDto.class))
                 .toList();
     }
-
-    @Override
-    public TrainingTypeDto getByName(String name) {
-        TrainingType trainingType = trainingTypeRepository.findByName(name);
-        return conversionService.convert(trainingType, TrainingTypeDto.class);
-    }
 }
