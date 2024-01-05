@@ -1,5 +1,6 @@
 package dev.gym.service.converter.trainer;
 
+import dev.gym.repository.TrainingTypeRepository;
 import dev.gym.repository.datasource.credential.CredentialGenerator;
 import dev.gym.repository.model.Trainer;
 import dev.gym.service.dto.RegisterTrainerDto;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class RegisterTrainerDtoRequestToTrainerConverter implements Converter<RegisterTrainerDto, Trainer> {
 
     private final CredentialGenerator credentialGenerator;
+    private final TrainingTypeRepository trainingTypeRepository;
 
     @Override
     public Trainer convert(RegisterTrainerDto source) {
@@ -20,7 +22,7 @@ public class RegisterTrainerDtoRequestToTrainerConverter implements Converter<Re
         trainer.setLastName(source.lastName());
         trainer.setUsername(credentialGenerator.generateUsername(trainer.getFirstName(), trainer.getLastName()));
         trainer.setPassword(credentialGenerator.generatePassword());
-        trainer.setSpecialization(source.specialization());
+        trainer.setSpecialization(trainingTypeRepository.findByName(source.specialization()));
         return trainer;
     }
 }
