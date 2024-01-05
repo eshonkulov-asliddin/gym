@@ -4,23 +4,18 @@ import dev.gym.repository.TrainingTypeRepository;
 import dev.gym.repository.model.TrainingType;
 import dev.gym.service.TrainingTypeService;
 import dev.gym.service.dto.TrainingTypeDto;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TrainingTypeServiceImpl implements TrainingTypeService<TrainingTypeDto> {
 
     private final TrainingTypeRepository trainingTypeRepository;
     private final ConversionService conversionService;
-
-    public TrainingTypeServiceImpl(TrainingTypeRepository trainingTypeRepository,
-                                   @Qualifier("customConvertionService") ConversionService conversionService) {
-        this.trainingTypeRepository = trainingTypeRepository;
-        this.conversionService = conversionService;
-    }
 
     @Override
     public List<TrainingTypeDto> getAll() {
@@ -28,5 +23,11 @@ public class TrainingTypeServiceImpl implements TrainingTypeService<TrainingType
         return all.stream()
                 .map(trainingType -> conversionService.convert(trainingType, TrainingTypeDto.class))
                 .toList();
+    }
+
+    @Override
+    public TrainingTypeDto getByName(String name) {
+        TrainingType trainingType = trainingTypeRepository.findByName(name);
+        return conversionService.convert(trainingType, TrainingTypeDto.class);
     }
 }
