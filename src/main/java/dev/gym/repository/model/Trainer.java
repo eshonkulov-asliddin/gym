@@ -45,4 +45,9 @@ public class Trainer extends User {
         training.setTrainer(null);
         trainingList.remove(training);
     }
+
+    public void update(Trainer trainer) {
+        super.update(trainer);
+        this.specialization = trainer.specialization;
+    }
 }
