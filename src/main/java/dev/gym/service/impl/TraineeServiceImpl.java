@@ -2,6 +2,7 @@ package dev.gym.service.impl;
 
 import dev.gym.repository.TraineeRepository;
 import dev.gym.repository.TrainerRepository;
+import dev.gym.repository.TrainingRepository;
 import dev.gym.repository.model.Trainee;
 import dev.gym.repository.model.Trainer;
 import dev.gym.repository.model.Training;
@@ -16,27 +17,28 @@ import dev.gym.service.dto.UserDto;
 import dev.gym.service.exception.NotFoundException;
 import dev.gym.service.exception.util.ExceptionConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TraineeServiceImpl extends AbstractUserService<TraineeDto, Long, Trainee> implements TraineeService {
 
-    private final ConversionService conversionService;
     private final TrainerRepository trainerRepository;
+    private final TrainingRepository trainingRepository;
+    private final ConversionService conversionService;
 
     @Autowired
     public TraineeServiceImpl(TraineeRepository traineeRepository,
-                              @Qualifier("customConvertionService") ConversionService conversionService,
-                              TrainerRepository trainerRepository) {
+                              TrainerRepository trainerRepository,
+                              TrainingRepository trainingRepository,
+                              ConversionService conversionService) {
         super(traineeRepository, conversionService);
-        this.conversionService = conversionService;
         this.trainerRepository = trainerRepository;
+        this.trainingRepository = trainingRepository;
+        this.conversionService = conversionService;
     }
 
     public UserDto register(RegisterTraineeDto request) {
@@ -46,59 +48,59 @@ public class TraineeServiceImpl extends AbstractUserService<TraineeDto, Long, Tr
     }
 
     public TraineeDto update(String username, UpdateTraineeDto request) {
-        Trainee byUsername = userRepository.findByUsername(username)
+        Trainee oldTrainee = userRepository.findByUsername(username)
                 .orElseThrow(
                         () -> new NotFoundException(
                                 String.format(ExceptionConstants.NOT_FOUND_MESSAGE, "Trainee", username)
                         )
                 );
 
-        Trainee trainee = conversionService.convert(request, Trainee.class);
-        trainee.setUsername(username);
-        byUsername.update(trainee);
-        save(byUsername);
-        return conversionService.convert(trainee, TraineeDto.class);
+        Trainee newTrainee = conversionService.convert(request, Trainee.class);
+        newTrainee.setUsername(username);
+        oldTrainee.update(newTrainee);
+        save(oldTrainee);
+        return conversionService.convert(newTrainee, TraineeDto.class);
     }
 
     @Override
     public List<TrainerDto> updateTrainers(String username, List<TraineeTrainerDto> trainerDtoList) {
-        List<Trainer> trainers = trainerDtoList.stream()
-                .map(trainerDto -> trainerRepository.findByUsername(trainerDto.trainerUsername()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
-
-        Trainee byUsername = userRepository.findByUsername(username)
+        Trainee trainee = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException(
                         String.format(
                                 ExceptionConstants.NOT_FOUND_MESSAGE, "Trainee", username
                         )
                 ));
 
-        byUsername.addTrainers(trainers);
-        save(byUsername);
+        List<String> trainerUsernameList = trainerDtoList.stream()
+                .map(TraineeTrainerDto::trainerUsername)
+                .toList();
+
+        List<Trainer> trainers = trainerRepository.findTrainersByUsernames(trainerUsernameList);
+
+        trainee.addTrainers(trainers);
+        save(trainee);
         return trainers.stream()
                 .map(trainer -> conversionService.convert(trainer, TrainerDto.class))
                 .toList();
     }
 
     @Override
-    public List<TraineeTrainingDto> getAllTrainingsByUsername(String username, LocalDate from, LocalDate to, String trainerUsername, String trainingTypeName) {
-        if (!userRepository.existByUsername(username)) {
+    public List<TraineeTrainingDto> getAllTrainingsByUsername(String traineeUsername, LocalDate from, LocalDate to, String trainerUsername, String trainingTypeName) {
+        if (!userRepository.existByUsername(traineeUsername)) {
             throw new NotFoundException(
                     String.format(
-                            ExceptionConstants.NOT_FOUND_MESSAGE, "Trainee", username
+                            ExceptionConstants.NOT_FOUND_MESSAGE, "Trainee", traineeUsername
                     )
             );
         }
-        List<Training> allTrainingsByUsername = ((TraineeRepository) userRepository).findAllTrainingsByUsername(username, from, to, trainerUsername, trainingTypeName);
+        List<Training> allTrainingsByUsername = trainingRepository.findFor(traineeUsername, trainerUsername, from, to);
         return allTrainingsByUsername.stream()
                 .map(training -> conversionService.convert(training, TraineeTrainingDto.class))
                 .toList();
     }
 
     @Override
-    public Class<TraineeDto> getDtoClass() {
+    protected Class<TraineeDto> getDtoClass() {
         return TraineeDto.class;
     }
 }
