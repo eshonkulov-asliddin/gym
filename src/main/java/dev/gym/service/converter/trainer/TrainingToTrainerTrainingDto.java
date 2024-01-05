@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TrainingToTrainerTrainingDto implements Converter<Training, TrainerTrainingDto> {
+
     @Override
     public TrainerTrainingDto convert(Training source) {
         return new TrainerTrainingDto(
