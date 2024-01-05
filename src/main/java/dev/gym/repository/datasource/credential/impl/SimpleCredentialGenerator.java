@@ -17,10 +17,8 @@ import java.util.HashSet;
 public class SimpleCredentialGenerator implements CredentialGenerator {
 
     public static final String DELIMITER = ".";
-
-    public final Logger logger = LoggerFactory.getLogger(SimpleCredentialGenerator.class);
-
     private final EntityManagerFactory entityManagerFactory;
+    public final Logger LOGGER = LoggerFactory.getLogger(SimpleCredentialGenerator.class);
 
     @Override
     public String generateUsername(String firstName, String lastName) {
@@ -32,7 +30,7 @@ public class SimpleCredentialGenerator implements CredentialGenerator {
                     .setParameter("username", baseUsername + "%")
                     .getResultList());
         } catch (PersistenceException e) {
-            logger.error("Error while generating username", e);
+            LOGGER.error("Error while generating username", e);
             e.printStackTrace();
         }
         int count = 0;
