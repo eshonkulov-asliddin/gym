@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.Optional;
 
 abstract class AbstractUserService<T, K, E extends User> extends AbstractCrudService<T, K, E> implements UserService<T, K, E> {
