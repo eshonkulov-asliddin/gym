@@ -1,6 +1,7 @@
 package dev.gym.service.impl;
 
 import dev.gym.repository.TrainerRepository;
+import dev.gym.repository.TrainingRepository;
 import dev.gym.repository.model.Trainer;
 import dev.gym.repository.model.Training;
 import dev.gym.service.TrainerService;
@@ -12,7 +13,6 @@ import dev.gym.service.dto.UserDto;
 import dev.gym.service.exception.NotFoundException;
 import dev.gym.service.exception.util.ExceptionConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +22,17 @@ import java.util.List;
 @Service
 public class TrainerServiceImpl extends AbstractUserService<TrainerDto, Long, Trainer> implements TrainerService {
 
+    private final TrainerRepository trainerRepository;
+    private final TrainingRepository trainingRepository;
     private final ConversionService conversionService;
 
     @Autowired
     protected TrainerServiceImpl(TrainerRepository trainerRepository,
-                                 @Qualifier("customConvertionService") ConversionService conversionService) {
+                                 TrainingRepository trainingRepository,
+                                 ConversionService conversionService) {
         super(trainerRepository, conversionService);
+        this.trainerRepository = trainerRepository;
+        this.trainingRepository = trainingRepository;
         this.conversionService = conversionService;
     }
 
@@ -38,26 +43,29 @@ public class TrainerServiceImpl extends AbstractUserService<TrainerDto, Long, Tr
     }
 
     public TrainerDto update(String username, UpdateTrainerDto request) {
-        Trainer byUsername = userRepository.findByUsername(username)
+        Trainer oldTrainer = userRepository.findByUsername(username)
                 .orElseThrow(
                         () -> new NotFoundException(
                                 String.format(ExceptionConstants.NOT_FOUND_MESSAGE, "Trainer", username)
                         )
                 );
-        Trainer trainer = conversionService.convert(request, Trainer.class);
-        byUsername.update(trainer);
-        save(trainer);
-        return conversionService.convert(trainer, TrainerDto.class);
+        Trainer newTrainer = conversionService.convert(request, Trainer.class);
+        newTrainer.setUsername(username);
+        oldTrainer.update(newTrainer);
+        save(oldTrainer);
+        return conversionService.convert(newTrainer, TrainerDto.class);
     }
 
     @Override
-    public Class<TrainerDto> getDtoClass() {
-        return TrainerDto.class;
-    }
-
-    @Override
-    public List<TrainerTrainingDto> getAllTrainingsByUsername(String username, LocalDate from, LocalDate to, String traineeUsername) {
-        List<Training> allTrainingsByUsername = ((TrainerRepository) userRepository).findAllTrainingsByUsername(username, from, to, traineeUsername);
+    public List<TrainerTrainingDto> getAllTrainingsByUsername(String trainerUsername, LocalDate from, LocalDate to, String traineeUsername) {
+        if (!userRepository.existByUsername(trainerUsername)){
+            throw new NotFoundException(
+                    String.format(
+                            ExceptionConstants.NOT_FOUND_MESSAGE, "Trainer", trainerUsername
+                    )
+            );
+        }
+        List<Training> allTrainingsByUsername = trainingRepository.findFor(traineeUsername, trainerUsername, from, to);
         return allTrainingsByUsername.stream()
                 .map(training -> conversionService.convert(training, TrainerTrainingDto.class))
                 .toList();
@@ -65,9 +73,14 @@ public class TrainerServiceImpl extends AbstractUserService<TrainerDto, Long, Tr
 
     @Override
     public List<TrainerDto> getAllActiveUnAssignedTrainers() {
-        List<Trainer> allActiveUnAssignedTrainers = ((TrainerRepository) userRepository).findActiveUnAssignedTrainers();
+        List<Trainer> allActiveUnAssignedTrainers = trainerRepository.findActiveUnAssignedTrainers();
         return allActiveUnAssignedTrainers.stream()
                 .map(trainer -> conversionService.convert(trainer, TrainerDto.class))
                 .toList();
+    }
+
+    @Override
+    protected Class<TrainerDto> getDtoClass() {
+        return TrainerDto.class;
     }
 }
