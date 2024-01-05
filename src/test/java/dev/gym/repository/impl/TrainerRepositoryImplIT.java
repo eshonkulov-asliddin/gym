@@ -118,7 +118,7 @@ class TrainerRepositoryImplIT {
     @Test
     void givenValidUsername_whenFindAllTrainingsByUsername_thenSuccess() {
         Training training = createTraining();
-        assertFalse(trainerRepository.findAllTrainingsByUsername(savedTrainer.getUsername(), null, null, null).isEmpty());
+        assertFalse(trainingRepository.findFor(null, savedTrainer.getUsername(), null, null).isEmpty());
     }
 
     private Training createTraining() {
