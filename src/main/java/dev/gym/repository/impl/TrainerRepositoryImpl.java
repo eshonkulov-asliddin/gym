@@ -2,11 +2,9 @@ package dev.gym.repository.impl;
 
 import dev.gym.repository.TrainerRepository;
 import dev.gym.repository.model.Trainer;
-import dev.gym.repository.model.Training;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static dev.gym.repository.impl.util.TransactionUtil.executeInTransaction;
@@ -25,20 +23,12 @@ public class TrainerRepositoryImpl extends AbstractUserRepository<Trainer, Long>
         });
     }
 
-    public List<Training> findAllTrainingsByUsername(String username, LocalDate from, LocalDate to, String traineeUsername) {
+    @Override
+    public List<Trainer> findTrainersByUsernames(List<String> usernames) {
         return executeInTransaction(entityManagerFactory, entityManager -> {
-            String query = "SELECT t FROM Training t " +
-                    "JOIN FETCH t.trainer " +
-                    "WHERE (t.trainer.username = :username) " +
-                    "AND (:from IS NULL OR t.trainingDate >= :from) " +
-                    "AND (:to IS NULL OR t.trainingDate <= :to) " +
-                    "AND (:traineeName IS NULL OR t.trainee.username = :traineeName)";
-
-            return entityManager.createQuery(query, Training.class)
-                    .setParameter("username", username)
-                    .setParameter("from", from)
-                    .setParameter("to", to)
-                    .setParameter("traineeName", traineeUsername)
+            String query = "SELECT t FROM Trainer t WHERE t.username IN :usernames";
+            return entityManager.createQuery(query, Trainer.class)
+                    .setParameter("usernames", usernames)
                     .getResultList();
         });
     }
