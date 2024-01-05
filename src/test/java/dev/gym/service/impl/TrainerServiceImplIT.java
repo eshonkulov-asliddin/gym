@@ -1,17 +1,16 @@
 package dev.gym.service.impl;
 
-import dev.gym.repository.config.RepositoryConfig;
+import dev.gym.config.AppConfig;
 import dev.gym.repository.model.enums.TrainingTypeEnum;
-import dev.gym.security.config.SecurityConfig;
 import dev.gym.service.TrainerService;
-import dev.gym.service.config.ServiceConfig;
+import dev.gym.service.converter.config.ConversionConfiguration;
 import dev.gym.service.dto.RegisterTrainerDto;
 import dev.gym.service.dto.TrainerDto;
 import dev.gym.service.dto.UserDto;
 import dev.gym.service.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +18,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringJUnitConfig(classes = {ServiceConfig.class, RepositoryConfig.class, SecurityConfig.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {AppConfig.class, ConversionConfiguration.class})
 class TrainerServiceImplIT {
 
     private final TrainerService trainerService;
@@ -36,7 +35,7 @@ class TrainerServiceImplIT {
         String lastName = "Doe";
 
         // Create a new trainerDtoRequest
-        RegisterTrainerDto registerTrainerDto = new RegisterTrainerDto(firstName, lastName, TrainingTypeEnum.CARDIO.toString());;
+        RegisterTrainerDto registerTrainerDto = new RegisterTrainerDto(firstName, lastName, TrainingTypeEnum.STRENGTH.toString());;
 
         // Save the trainerDtoRequest
         UserDto registered = trainerService.register(registerTrainerDto);
@@ -63,5 +62,4 @@ class TrainerServiceImplIT {
     void givenWrongId_whenFindById_thenReturnOptionalEmpty() {
         assertTrue(trainerService.getById(null).isEmpty());
     }
-
 }

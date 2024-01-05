@@ -3,6 +3,7 @@ package dev.gym.service.impl;
 import dev.gym.repository.TraineeRepository;
 import dev.gym.repository.TrainerRepository;
 import dev.gym.repository.TrainingRepository;
+import dev.gym.repository.datasource.credential.CredentialGenerator;
 import dev.gym.repository.model.Trainee;
 import dev.gym.repository.model.Trainer;
 import dev.gym.repository.model.Training;
@@ -26,6 +27,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,9 +46,12 @@ class TraineeServiceImplTest {
     @Mock
     private TrainingRepository trainingRepository;
     @Mock
+    private CredentialGenerator credentialGenerator;
+    @Mock
     private ConversionService conversionService;
     @InjectMocks
     private TraineeServiceImpl traineeService;
+
 
     @Test
     void givenValidRequest_whenRegisterTrainee_ThenReturnUserDto() {
@@ -54,8 +59,14 @@ class TraineeServiceImplTest {
         Trainee trainee = mock(Trainee.class);
         UserDto userDto = mock(UserDto.class);
 
+        when(trainee.getFirstName()).thenReturn("firstName");
+        when(trainee.getLastName()).thenReturn("lastName");
+
         when(userDto.username()).thenReturn("username");
         when(userDto.password()).thenReturn("password");
+
+        when(credentialGenerator.generateUsername(trainee.getFirstName(), trainee.getLastName())).thenReturn("username");
+        when(credentialGenerator.generatePassword()).thenReturn("password");
 
         when(conversionService.convert(registerTraineeDto, Trainee.class)).thenReturn(trainee);
         doNothing().when(traineeRepository).save(trainee);
@@ -63,7 +74,7 @@ class TraineeServiceImplTest {
 
         UserDto result = traineeService.register(registerTraineeDto);
 
-        assert result != null;
+        assertNotNull(result);
         assertEquals("username", result.username());
         assertEquals("password", result.password());
     }
@@ -74,7 +85,7 @@ class TraineeServiceImplTest {
         Trainee oldTrainee = mock(Trainee.class);
         TraineeDto traineeDto = mock(TraineeDto.class);
 
-        when(traineeDto.username()).thenReturn("Tom");
+        when(traineeDto.username()).thenReturn("username");
 
         doNothing().when(oldTrainee).update(newTrainee);
 
@@ -87,8 +98,8 @@ class TraineeServiceImplTest {
 
         TraineeDto updatedTraineeDto = traineeService.update("username", updateTraineeDto);
 
-        assert updatedTraineeDto != null;
-        assertEquals("Tom", updatedTraineeDto.username());
+        assertNotNull(updatedTraineeDto);
+        assertEquals("username", updatedTraineeDto.username());
     }
 
     @Test
