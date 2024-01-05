@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +40,7 @@ class TrainingToTraineeTrainingDtoConverterTest {
 
         TraineeTrainingDto traineeTrainingDto = trainingToTraineeTrainingDto.convert(training);
 
-        assert traineeTrainingDto != null;
+        assertNotNull(traineeTrainingDto);
         assertEquals("Test Training", traineeTrainingDto.trainingName());
         assertEquals(LocalDate.of(2024, 1, 1), traineeTrainingDto.trainingDate());
         assertEquals(TrainingTypeEnum.CARDIO, traineeTrainingDto.trainingType());

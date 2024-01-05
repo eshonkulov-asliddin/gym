@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +26,7 @@ class TraineeToUserDtoConverterTest {
 
         UserDto userDto = traineeToUserDtoConverter.convert(trainee);
 
-        assert userDto != null;
+        assertNotNull(userDto);
         assertEquals("John.Doe", userDto.username());
         assertEquals("password", userDto.password());
     }

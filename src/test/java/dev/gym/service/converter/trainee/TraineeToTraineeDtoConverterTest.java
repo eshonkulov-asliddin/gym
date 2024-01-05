@@ -13,6 +13,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -44,7 +45,7 @@ class TraineeToTraineeDtoConverterTest {
 
         TraineeDto traineeDto = traineeToTraineeDtoConverter.convert(trainee);
 
-        assert traineeDto != null;
+        assertNotNull(traineeDto);
         assertEquals("John.Doe", traineeDto.username());
         assertEquals("John", traineeDto.firstName());
         assertEquals("Doe", traineeDto.lastName());

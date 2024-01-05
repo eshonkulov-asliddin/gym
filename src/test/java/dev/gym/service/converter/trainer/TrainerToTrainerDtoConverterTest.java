@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -47,7 +48,7 @@ class TrainerToTrainerDtoConverterTest {
 
         TrainerDto trainerDto = trainerToTrainerDtoConverter.convert(trainer);
 
-        assert trainerDto != null;
+        assertNotNull(trainerDto);
         assertEquals("John.Doe", trainerDto.username());
         assertEquals("John", trainerDto.firstName());
         assertEquals("Doe", trainerDto.lastName());
