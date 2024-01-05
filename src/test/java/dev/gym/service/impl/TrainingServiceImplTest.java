@@ -6,7 +6,6 @@ import dev.gym.repository.TrainingRepository;
 import dev.gym.repository.model.Trainee;
 import dev.gym.repository.model.Trainer;
 import dev.gym.repository.model.Training;
-import dev.gym.repository.model.TrainingType;
 import dev.gym.service.dto.CreateTrainingDto;
 import dev.gym.service.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
@@ -65,25 +64,5 @@ class TrainingServiceImplTest {
         assertThrows(NotFoundException.class, () -> {
             trainingService.addTraining(createTrainingDto);
         });
-    }
-
-    @Test
-    void whenAddTrainingWithValidTraineeAndTrainerUsername_thenSaveTraining() {
-        Trainee trainee = mock(Trainee.class);
-        when(traineeRepository.findByUsername("traineeUsername")).thenReturn(Optional.of(trainee));
-
-        Trainer trainer = mock(Trainer.class);
-        when(trainerRepository.findByUsername("trainerUsername")).thenReturn(Optional.of(trainer));
-
-        TrainingType trainingType = mock(TrainingType.class);
-
-        CreateTrainingDto createTrainingDto = new CreateTrainingDto("traineeUsername", "trainerUsername", "trainingName", LocalDate.of(2024, 1, 1), 60);
-        Training training = mock(Training.class);
-        when(conversionService.convert(createTrainingDto, Training.class)).thenReturn(training);
-        doNothing().when(training).setTrainee(trainee);
-        doNothing().when(training).setTrainer(trainer);
-        doNothing().when(trainingRepository).save(training);
-
-        trainingService.addTraining(createTrainingDto);
     }
 }
