@@ -3,6 +3,7 @@ package dev.gym.service.impl;
 import dev.gym.repository.TraineeRepository;
 import dev.gym.repository.TrainerRepository;
 import dev.gym.repository.TrainingRepository;
+import dev.gym.repository.datasource.credential.CredentialGenerator;
 import dev.gym.repository.model.Trainee;
 import dev.gym.repository.model.Trainer;
 import dev.gym.repository.model.Training;
@@ -28,21 +29,26 @@ public class TraineeServiceImpl extends AbstractUserService<TraineeDto, Long, Tr
 
     private final TrainerRepository trainerRepository;
     private final TrainingRepository trainingRepository;
+    private final CredentialGenerator credentialGenerator;
     private final ConversionService conversionService;
 
     @Autowired
     public TraineeServiceImpl(TraineeRepository traineeRepository,
                               TrainerRepository trainerRepository,
                               TrainingRepository trainingRepository,
+                              CredentialGenerator credentialGenerator,
                               ConversionService conversionService) {
         super(traineeRepository, conversionService);
         this.trainerRepository = trainerRepository;
         this.trainingRepository = trainingRepository;
+        this.credentialGenerator = credentialGenerator;
         this.conversionService = conversionService;
     }
 
     public UserDto register(RegisterTraineeDto request) {
         Trainee trainee = conversionService.convert(request, Trainee.class);
+        trainee.setUsername(credentialGenerator.generateUsername(trainee.getFirstName(), trainee.getLastName()));
+        trainee.setPassword(credentialGenerator.generatePassword());
         save(trainee);
         return conversionService.convert(trainee, UserDto.class);
     }
