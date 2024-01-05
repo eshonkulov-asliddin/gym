@@ -10,6 +10,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("unchecked")
 abstract class AbstractCrudService<T, K, E> implements CrudService<T, K, E> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudService.class);
@@ -57,5 +58,5 @@ abstract class AbstractCrudService<T, K, E> implements CrudService<T, K, E> {
         return Optional.empty();
     }
 
-    public abstract Class<T> getDtoClass();
+    protected abstract Class<T> getDtoClass();
 }
