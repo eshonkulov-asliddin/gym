@@ -1,9 +1,9 @@
 package dev.gym.service;
 
 import dev.gym.repository.model.Training;
-import dev.gym.service.dto.AddTrainingDto;
+import dev.gym.service.dto.CreateTrainingDto;
 
-public interface TrainingService extends CrudService<AddTrainingDto, Long, Training> {
+public interface TrainingService extends CrudService<CreateTrainingDto, Long, Training> {
 
-    void addTraining(AddTrainingDto request);
+    void addTraining(CreateTrainingDto request);
 }
