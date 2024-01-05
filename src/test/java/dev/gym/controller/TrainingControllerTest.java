@@ -2,7 +2,7 @@ package dev.gym.controller;
 
 import dev.gym.service.TrainingService;
 import dev.gym.service.TrainingTypeService;
-import dev.gym.service.dto.AddTrainingDto;
+import dev.gym.service.dto.CreateTrainingDto;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,15 +12,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.convert.ConversionService;
 
-import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
-import static io.restassured.http.ContentType.JSON;
-
-
 import java.time.LocalDate;
+
+import static io.restassured.http.ContentType.JSON;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 
 
 @ExtendWith(MockitoExtension.class)
-public class TrainingControllerTest {
+class TrainingControllerTest {
 
     @Mock
     private TrainingService trainingService;
@@ -40,11 +39,11 @@ public class TrainingControllerTest {
     @Test
     void givenValidRequest_whenAddTraining_thenSuccess() {
 
-        AddTrainingDto addTrainingDto = new AddTrainingDto("John.Doe", "Jane.Doe", "Yoga", LocalDate.now().plusDays(1), 60);
+        CreateTrainingDto createTrainingDto = new CreateTrainingDto("John.Doe", "Jane.Doe", "Yoga", LocalDate.now().plusDays(1), 60);
 
         given()
             .contentType(JSON)
-            .body(addTrainingDto)
+            .body(createTrainingDto)
         .when()
             .post()
         .then()

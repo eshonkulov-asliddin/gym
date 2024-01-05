@@ -1,6 +1,5 @@
 package dev.gym.controller;
 
-import dev.gym.repository.model.TrainingType;
 import dev.gym.repository.model.enums.TrainingTypeEnum;
 import dev.gym.service.TrainerService;
 import dev.gym.service.dto.RegisterTrainerDto;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class TrainerControllerTest {
+class TrainerControllerTest {
 
     @Mock
     private TrainerService trainerService;
@@ -39,11 +38,7 @@ public class TrainerControllerTest {
 
     @Test
     void givenValidRequest_whenRegister_thenReturnCreated() {
-        TrainingType trainingType = new TrainingType();
-        trainingType.setId(1L);
-        trainingType.setTrainingTypeName(TrainingTypeEnum.STRENGTH);
-
-        RegisterTrainerDto registerTrainerDto = new RegisterTrainerDto("John", "Doe", trainingType);
+        RegisterTrainerDto registerTrainerDto = new RegisterTrainerDto("John", "Doe", TrainingTypeEnum.STRENGTH.toString());
         UserDto userDto = mock(UserDto.class);
 
         when(userDto.username()).thenReturn("John.Doe");
@@ -108,11 +103,7 @@ public class TrainerControllerTest {
     void givenValidRequest_whenUpdate_thenSuccess() {
         String username = "John.Doe";
 
-        TrainingType trainingType = new TrainingType();
-        trainingType.setId(1L);
-        trainingType.setTrainingTypeName(TrainingTypeEnum.STRENGTH);
-
-        UpdateTrainerDto updateTrainerDto = new UpdateTrainerDto("John", "Doe", trainingType, false);
+        UpdateTrainerDto updateTrainerDto = new UpdateTrainerDto("John", "Doe", TrainingTypeEnum.CARDIO.toString(), false);
 
         TrainerDto trainerDto = mock(TrainerDto.class);
         when(trainerDto.username()).thenReturn(username);
