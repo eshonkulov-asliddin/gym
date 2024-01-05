@@ -8,4 +8,6 @@ public interface TrainingTypeRepository {
 
     List<TrainingType> findAll();
 
+    TrainingType findByName(String name);
+
 }
