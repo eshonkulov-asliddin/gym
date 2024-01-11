@@ -1,20 +1,15 @@
 package dev.gym.service;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface UserService<T, R, K, L> extends CrudService<T, R, K> {
+public interface UserService<T, K, E> extends CrudService<T, K, E> {
 
-    Optional<R> getByUsername(String username);
+    Optional<T> getByUsername(String username);
 
     void deleteByUsername(String username);
 
-    void updatePassword(K id, String newPassword);
+    void updatePassword(String username, String newPassword);
 
-    void activate(K id);
-
-    void deactivate(K id);
-
-    List<L> getAllTrainingsByUsername(String username);
+    void setActiveStatus(String username, boolean activeStatus);
 
 }

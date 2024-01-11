@@ -13,6 +13,9 @@ repositories {
 
 dependencies {
     implementation "org.springframework:spring-context:$springVersion"
+    implementation "org.springframework:spring-web:$springVersion"
+    implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+
     implementation "jakarta.annotation:jakarta.annotation-api:$jakartaVersion"
 
     // pull in logback-core and slf4j-api
@@ -21,6 +24,9 @@ dependencies {
 
     // hibernate
     implementation "org.hibernate.orm:hibernate-core:$hibernateVersion"
+    implementation "org.hibernate:hibernate-validator:$hibernateValidatorVersion"
+
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion"
 
     // mysql
     implementation "mysql:mysql-connector-java:$mysqlVersion"
@@ -43,6 +49,9 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiterVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
+    testImplementation "io.rest-assured:spring-mock-mvc:$restAssuredVersion"
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+
 
 }
 

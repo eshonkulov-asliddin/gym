@@ -2,54 +2,47 @@ package dev.gym.service.impl;
 
 import dev.gym.repository.CrudRepository;
 import dev.gym.service.CrudService;
-import dev.gym.service.exception.util.ExceptionConstants;
-import dev.gym.service.mapper.BaseMapper;
-import dev.gym.service.validator.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.convert.ConversionService;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Optional;
 
-public class AbstractCrudService<T, R, K, L> implements CrudService<T, R, K> {
+@SuppressWarnings("unchecked")
+abstract class AbstractCrudService<T, K, E> implements CrudService<T, K, E> {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractCrudService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudService.class);
+    protected Class<E> entityClass;
+    private final CrudRepository<E, K> repository;
+    private final ConversionService conversionService;
 
-    private final CrudRepository<L, K> repository;
-
-    private final Validator<T> validator;
-
-    protected final BaseMapper<T, R, L> mapper;
-
-    public AbstractCrudService(CrudRepository<L, K> repository, Validator<T> validator, BaseMapper<T, R, L> mapper) {
+    protected AbstractCrudService(CrudRepository<E, K> repository, ConversionService conversionService) {
+        ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
+        this.entityClass = (Class<E>) genericSuperclass.getActualTypeArguments()[2];
         this.repository = repository;
-        this.validator = validator;
-        this.mapper = mapper;
+        this.conversionService = conversionService;
     }
 
     @Override
-    public List<R> getAll() {
+    public List<T> getAll() {
         return repository.findAll().stream()
-                .map(mapper::modelToDto)
+                .map(entity -> conversionService.convert(entity, getDtoClass()))
                 .toList();
     }
 
     @Override
-    public Optional<R> getById(K id) {
+    public Optional<T> getById(K id) {
         return Optional.ofNullable(id)
                 .flatMap(repository::findById)
-                .map(mapper::modelToDto)
+                .map(entity -> conversionService.convert(entity, getDtoClass()))
                 .or(() -> handleNotFound(id));
     }
 
     @Override
-    public R save(T request) {
-        validator.validate(request);
-        return Optional.of(request)
-                .map(mapper::dtoToModel)
-                .map(repository::save)
-                .map(mapper::modelToDto)
-                .orElseThrow();
+    public void save(E entity) {
+        repository.save(entity);
     }
 
     @Override
@@ -60,9 +53,10 @@ public class AbstractCrudService<T, R, K, L> implements CrudService<T, R, K> {
                 .orElse(false);
     }
 
-    private Optional<R> handleNotFound(K id) {
-        logger.error(String.format(ExceptionConstants.NOT_FOUND_MESSAGE, "entity", id));
+    private Optional<T> handleNotFound(K id) {
+        LOGGER.error("{} with id {} not found", entityClass.getSimpleName(), id);
         return Optional.empty();
     }
 
+    protected abstract Class<T> getDtoClass();
 }

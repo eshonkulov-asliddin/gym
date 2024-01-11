@@ -3,13 +3,13 @@ package dev.gym.service;
 import java.util.List;
 import java.util.Optional;
 
-public interface CrudService<T, R, K> {
+public interface CrudService<T, K, E> {
 
-    List<R> getAll();
+    List<T> getAll();
 
-    Optional<R> getById(K id);
+    Optional<T> getById(K id);
 
-    R save(T request);
+    void save(E entity);
 
     boolean deleteById(K id);
 

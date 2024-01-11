@@ -14,28 +14,24 @@ import static dev.gym.repository.impl.util.TransactionUtil.executeInTransaction;
 @SuppressWarnings("unchecked")
 public abstract class AbstractCrudRepository<T, K> implements CrudRepository<T, K> {
 
-    protected final Logger logger;
-
-    protected final EntityManagerFactory entityManagerFactory;
-
     protected final Class<T> entityClass;
-
     protected final Class<K> entityIdClass;
-
+    protected final Logger LOGGER;
+    protected final EntityManagerFactory entityManagerFactory;
 
     protected AbstractCrudRepository(EntityManagerFactory entityManagerFactory) {
         ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
         this.entityClass = (Class<T>) genericSuperclass.getActualTypeArguments()[0];
         this.entityIdClass = (Class<K>) genericSuperclass.getActualTypeArguments()[1];
-        this.logger = LoggerFactory.getLogger(entityClass);
         this.entityManagerFactory = entityManagerFactory;
+        this.LOGGER = LoggerFactory.getLogger(entityClass);
     }
 
     @Override
     public List<T> findAll() {
         return executeInTransaction(entityManagerFactory, entityManager -> {
-            logger.info("Find all entities");
-            String query = "select t from " + entityClass.getSimpleName() + " t";
+            LOGGER.info("Find all {}", entityClass.getSimpleName());
+            String query = "SELECT t FROM " + entityClass.getSimpleName() + " t";
             return entityManager.createQuery(query, entityClass).getResultList();
         });
     }
@@ -43,24 +39,23 @@ public abstract class AbstractCrudRepository<T, K> implements CrudRepository<T, 
     @Override
     public Optional<T> findById(K id) {
         return executeInTransaction(entityManagerFactory, entityManager -> {
-            logger.info("Find entity by id {}", id);
+            LOGGER.info("Find {} by id {}", entityClass.getSimpleName(), id);
             return Optional.ofNullable(entityManager.find(entityClass, id));
         });
     }
 
     @Override
-    public T save(T entity) {
-        return executeInTransaction(entityManagerFactory, entityManager -> {
-            logger.info("Save entity {}", entity);
+    public void save(T entity) {
+        executeInTransaction(entityManagerFactory, entityManager -> {
+            LOGGER.info("Save {}", entity);
             entityManager.merge(entity);
-            return entity;
         });
     }
 
     @Override
     public boolean delete(K id) {
         return executeInTransaction(entityManagerFactory, entityManager -> {
-            logger.info("Delete entity by id {}", id);
+            LOGGER.info("Delete {} by id {}", entityClass.getSimpleName(), id);
             T reference = entityManager.getReference(entityClass, id);
             entityManager.remove(reference);
             return true;
@@ -70,8 +65,8 @@ public abstract class AbstractCrudRepository<T, K> implements CrudRepository<T, 
     @Override
     public boolean existById(K id) {
         return executeInTransaction(entityManagerFactory, entityManager -> {
-            logger.info("Check if entity with id {} exists", id);
-            String query = "select count(t) from " + entityClass.getSimpleName() + " t where t.id = :id";
+            LOGGER.info("Check if {} with id {} exists", entityClass.getSimpleName(), id);
+            String query = "SELECT COUNT(t) FROM " + entityClass.getSimpleName() + " t WHERE t.id = :id";
             return entityManager.createQuery(query, Long.class)
                     .setParameter("id", id)
                     .getSingleResult() > 0;

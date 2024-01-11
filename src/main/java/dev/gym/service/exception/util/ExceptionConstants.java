@@ -5,9 +5,9 @@ public class ExceptionConstants {
     private ExceptionConstants() {
     }
 
-    public static final String NOT_FOUND_MESSAGE = "not found %s with id %s";
+    public static final String NOT_FOUND_MESSAGE = "%s with username %s not found";
 
-    public static final String ILLIGAL_ARGUMENT_MESSAGE = "% is not valid";
+    public static final String ILLIGAL_ARGUMENT_MESSAGE = "%s is not valid";
 
     public static final String SAVE_FAILED_MESSAGE = "couldn't save %s with id %s";
 

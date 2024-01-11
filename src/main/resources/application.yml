@@ -1,0 +1,8 @@
+openapi:
+  info:
+    title: "GYM API"
+    description: "API for GYM application"
+    version: "@project.version@"
+    license:
+      name: MIT
+      url: "https://opensource.org/licenses/MIT"
