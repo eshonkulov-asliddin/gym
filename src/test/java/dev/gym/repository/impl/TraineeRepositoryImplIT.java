@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.transaction.TestTransaction;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -88,18 +89,17 @@ class TraineeRepositoryImplIT {
 
     @Test
     void givenValidUsername_whenUpdatePassword_thenUpdateAndCheck() {
-        // Generate a new password
         String newPassword = randomAlphabetic(10);
-
-        // Update the password in the repository
         traineeRepository.updatePasswordByUsername(savedTrainee.getUsername(), newPassword);
+        // Commit the transaction
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
 
-        // Retrieve the Trainee from the repository
+        // Retrieve the Trainee from the repository after the update
         Optional<Trainee> trainee = traineeRepository.findByUsername(savedTrainee.getUsername());
 
         // Check if the Trainee is present
         assertTrue(trainee.isPresent());
-
         // Check if the password is updated
         assertEquals(newPassword, trainee.get().getPassword());
     }
