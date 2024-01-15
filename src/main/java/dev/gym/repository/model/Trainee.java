@@ -44,7 +44,10 @@ public class Trainee extends User {
 
 
     public void addTrainers(List<Trainer> trainers) {
-        this.trainers.addAll(trainers);
+        for (Trainer trainer : trainers){
+            this.trainers.add(trainer);
+            trainer.getTrainees().add(this);
+        }
     }
 
     public void update(Trainee trainee) {
