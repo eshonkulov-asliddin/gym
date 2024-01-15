@@ -1,7 +1,8 @@
 package dev.gym.service.authentication;
 
-import dev.gym.repository.impl.UserRepositoryImpl;
+import dev.gym.repository.UserRepository;
 import dev.gym.repository.model.Trainer;
+import dev.gym.repository.model.User;
 import dev.gym.security.authentication.UserAuthService;
 import dev.gym.service.exception.InvalidUsernameOrPasswordException;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,13 +16,13 @@ import static org.mockito.Mockito.when;
 
 class TrainerAuthServiceTest {
 
-    static UserRepositoryImpl trainerRepositoryImpl;
+    static UserRepository<User, Long> trainerRepositoryImpl;
     static Trainer trainer;
     static UserAuthService trainerAuthService;
 
     @BeforeAll
     static void setup() {
-        trainerRepositoryImpl = mock(UserRepositoryImpl.class);
+        trainerRepositoryImpl = mock(UserRepository.class);
         trainer = mock(Trainer.class);
         trainerAuthService = new UserAuthService(trainerRepositoryImpl);
 
