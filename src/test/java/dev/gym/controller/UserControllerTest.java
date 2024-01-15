@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static dev.gym.controller.util.RestApiConst.USER_API_ROOT_PATH;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.mockito.Mockito.doNothing;
 
@@ -26,7 +27,7 @@ class UserControllerTest {
     @BeforeEach
     void initialiseRestAssuredMockMvcStandalone() {
         RestAssuredMockMvc.standaloneSetup(userController);
-        RestAssuredMockMvc.basePath = "/api/v1/users";
+        RestAssuredMockMvc.basePath = USER_API_ROOT_PATH;
     }
 
     @Test

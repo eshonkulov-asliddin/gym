@@ -14,6 +14,7 @@ import org.springframework.core.convert.ConversionService;
 
 import java.time.LocalDate;
 
+import static dev.gym.controller.util.RestApiConst.TRAINING_API_ROOT_PATH;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 
@@ -33,7 +34,7 @@ class TrainingControllerTest {
     @BeforeEach
     void initialiseRestAssuredMockMvcStandalone() {
         RestAssuredMockMvc.standaloneSetup(trainingController);
-        RestAssuredMockMvc.basePath = "/api/v1/trainings";
+        RestAssuredMockMvc.basePath = TRAINING_API_ROOT_PATH;
     }
 
     @Test

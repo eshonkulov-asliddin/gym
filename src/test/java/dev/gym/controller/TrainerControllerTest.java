@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static dev.gym.controller.util.RestApiConst.TRAINER_API_ROOT_PATH;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
@@ -33,7 +34,7 @@ class TrainerControllerTest {
     @BeforeEach
     void initialiseRestAssuredMockMvcStandalone() {
         RestAssuredMockMvc.standaloneSetup(trainerController);
-        RestAssuredMockMvc.basePath = "/api/v1/trainers";
+        RestAssuredMockMvc.basePath = TRAINER_API_ROOT_PATH;
     }
 
     @Test
