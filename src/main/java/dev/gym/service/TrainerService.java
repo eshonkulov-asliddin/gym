@@ -18,6 +18,6 @@ public interface TrainerService extends UserService<TrainerDto, Long, Trainer> {
 
     List<TrainerTrainingDto> getAllTrainingsByUsername(String username, LocalDate from, LocalDate to, String traineeUsername);
 
-    List<TrainerDto> getAllActiveUnAssignedTrainers();
+    List<TrainerDto> getByIsActiveTrueAndAssignedTraineesIsEmpty();
 
 }
