@@ -8,6 +8,7 @@ import dev.gym.service.exception.util.ExceptionConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -32,27 +33,34 @@ abstract class AbstractUserService<T, K, E extends User> extends AbstractCrudSer
     }
 
     @Override
+    @Transactional
     public void deleteByUsername(String username) {
         checkUserExistence(username);
         userRepository.deleteByUsername(username);
     }
 
     @Override
+    @Transactional
     public void updatePassword(String username, String newPassword) {
         checkUserExistence(username);
-        userRepository.updatePassword(username, newPassword);
+        userRepository.updatePasswordByUsername(username, newPassword);
     }
 
     @Override
+    @Transactional
     public void setActiveStatus(String username, boolean activeStatus) {
         checkUserExistence(username);
-        userRepository.setActiveStatus(username, activeStatus);
+        userRepository.setActiveStatusByUsername(username, activeStatus);
     }
 
     private void checkUserExistence(String username) {
-        if(!userRepository.existByUsername(username)) {
+        if(!userRepository.existsByUsername(username)) {
             LOGGER.info("{} with username {} not found", entityClass.getSimpleName(), username);
-            throw new NotFoundException(String.format(ExceptionConstants.NOT_FOUND_MESSAGE, entityClass.getSimpleName(), username));
+            throw new NotFoundException(
+                    String.format(
+                            ExceptionConstants.NOT_FOUND_MESSAGE, entityClass.getSimpleName(), username
+                    )
+            );
         }
     }
 }
