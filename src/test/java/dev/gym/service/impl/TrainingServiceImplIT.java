@@ -1,6 +1,6 @@
 package dev.gym.service.impl;
 
-import dev.gym.config.AppConfig;
+import dev.gym.GymApplication;
 import dev.gym.repository.TraineeRepository;
 import dev.gym.repository.TrainerRepository;
 import dev.gym.repository.datasource.credential.CredentialGenerator;
@@ -8,7 +8,6 @@ import dev.gym.repository.model.Trainee;
 import dev.gym.repository.model.Trainer;
 import dev.gym.repository.model.enums.TrainingTypeEnum;
 import dev.gym.service.TrainingService;
-import dev.gym.service.converter.config.ConversionConfiguration;
 import dev.gym.service.dto.CreateTrainingDto;
 import dev.gym.service.dto.RegisterTraineeDto;
 import dev.gym.service.dto.RegisterTrainerDto;
@@ -22,8 +21,9 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {AppConfig.class, ConversionConfiguration.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {GymApplication.class})
 class TrainingServiceImplIT {
 
     private final TraineeRepository traineeRepository;
@@ -53,7 +53,7 @@ class TrainingServiceImplIT {
         // create Trainer
         Trainer trainer = createTrainer();
 
-        String trainingName = "Test Training";
+        String trainingName = randomAlphabetic(10);
         LocalDate trainingDate = LocalDate.of(2021, 1, 1);
         int duration = 60;
 
@@ -65,8 +65,8 @@ class TrainingServiceImplIT {
     }
 
     private Trainer createTrainer() {
-        String firstName = "John";
-        String lastName = "Doe";
+        String firstName = randomAlphabetic(10);
+        String lastName = randomAlphabetic(10);
 
         RegisterTrainerDto trainerCreateDtoRequest = new RegisterTrainerDto(firstName, lastName, TrainingTypeEnum.STRENGTH.toString());
         Trainer trainer = conversionService.convert(trainerCreateDtoRequest, Trainer.class);
@@ -77,10 +77,10 @@ class TrainingServiceImplIT {
     }
 
     private Trainee createTrainee() {
-        String firstName = "John";
-        String lastName = "Doe";
+        String firstName = randomAlphabetic(10);
+        String lastName = randomAlphabetic(10);
         LocalDate dateOfBirth = LocalDate.of(1990, 1, 1);
-        String address = "123 Main St.";
+        String address = randomAlphabetic(10);
 
         RegisterTraineeDto traineeCreateDtoRequest = new RegisterTraineeDto(firstName, lastName, dateOfBirth, address);
         Trainee trainee = conversionService.convert(traineeCreateDtoRequest, Trainee.class);

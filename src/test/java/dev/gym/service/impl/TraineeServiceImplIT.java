@@ -1,7 +1,6 @@
 package dev.gym.service.impl;
 
-import dev.gym.config.AppConfig;
-import dev.gym.service.converter.config.ConversionConfiguration;
+import dev.gym.GymApplication;
 import dev.gym.service.dto.RegisterTraineeDto;
 import dev.gym.service.dto.TraineeDto;
 import dev.gym.service.dto.UserDto;
@@ -15,8 +14,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {AppConfig.class, ConversionConfiguration.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {GymApplication.class})
 class TraineeServiceImplIT {
 
     private final TraineeServiceImpl traineeService;
@@ -29,10 +29,10 @@ class TraineeServiceImplIT {
     @Test
     void testCRUD() {
         // fields values
-        String firstName = "John";
-        String lastName = "Doe";
+        String firstName = randomAlphabetic(10);
+        String lastName = randomAlphabetic(10);
         LocalDate dateOfBirth = LocalDate.of(1990, 1, 1);
-        String address = "123 Main St.";
+        String address = randomAlphabetic(5);
 
         // Create a new traineeDtoRequest
         RegisterTraineeDto registerTraineeDto = new RegisterTraineeDto(firstName, lastName, dateOfBirth, address);
