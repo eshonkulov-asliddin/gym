@@ -20,6 +20,7 @@ import dev.gym.service.exception.util.ExceptionConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.List;
 @Service
 public class TraineeServiceImpl extends AbstractUserService<TraineeDto, Long, Trainee> implements TraineeService {
 
+    private final TraineeRepository traineeRepository;
     private final TrainerRepository trainerRepository;
     private final TrainingRepository trainingRepository;
     private final CredentialGenerator credentialGenerator;
@@ -39,6 +41,7 @@ public class TraineeServiceImpl extends AbstractUserService<TraineeDto, Long, Tr
                               CredentialGenerator credentialGenerator,
                               ConversionService conversionService) {
         super(traineeRepository, conversionService);
+        this.traineeRepository = traineeRepository;
         this.trainerRepository = trainerRepository;
         this.trainingRepository = trainingRepository;
         this.credentialGenerator = credentialGenerator;
@@ -49,12 +52,13 @@ public class TraineeServiceImpl extends AbstractUserService<TraineeDto, Long, Tr
         Trainee trainee = conversionService.convert(request, Trainee.class);
         trainee.setUsername(credentialGenerator.generateUsername(trainee.getFirstName(), trainee.getLastName()));
         trainee.setPassword(credentialGenerator.generatePassword());
+        trainee.setActive(true);
         save(trainee);
         return conversionService.convert(trainee, UserDto.class);
     }
 
     public TraineeDto update(String username, UpdateTraineeDto request) {
-        Trainee oldTrainee = userRepository.findByUsername(username)
+        Trainee oldTrainee = traineeRepository.findByUsername(username)
                 .orElseThrow(
                         () -> new NotFoundException(
                                 String.format(ExceptionConstants.NOT_FOUND_MESSAGE, "Trainee", username)
@@ -69,8 +73,9 @@ public class TraineeServiceImpl extends AbstractUserService<TraineeDto, Long, Tr
     }
 
     @Override
+    @Transactional
     public List<TrainerDto> updateTrainers(String username, List<TraineeTrainerDto> trainerDtoList) {
-        Trainee trainee = userRepository.findByUsername(username)
+        Trainee trainee = traineeRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException(
                         String.format(
                                 ExceptionConstants.NOT_FOUND_MESSAGE, "Trainee", username
@@ -81,7 +86,7 @@ public class TraineeServiceImpl extends AbstractUserService<TraineeDto, Long, Tr
                 .map(TraineeTrainerDto::trainerUsername)
                 .toList();
 
-        List<Trainer> trainers = trainerRepository.findTrainersByUsernames(trainerUsernameList);
+        List<Trainer> trainers = trainerRepository.findByUsernameIn(trainerUsernameList);
 
         trainee.addTrainers(trainers);
         save(trainee);
@@ -92,7 +97,7 @@ public class TraineeServiceImpl extends AbstractUserService<TraineeDto, Long, Tr
 
     @Override
     public List<TraineeTrainingDto> getAllTrainingsByUsername(String traineeUsername, LocalDate from, LocalDate to, String trainerUsername, String trainingTypeName) {
-        if (!userRepository.existByUsername(traineeUsername)) {
+        if (!userRepository.existsByUsername(traineeUsername)) {
             throw new NotFoundException(
                     String.format(
                             ExceptionConstants.NOT_FOUND_MESSAGE, "Trainee", traineeUsername
