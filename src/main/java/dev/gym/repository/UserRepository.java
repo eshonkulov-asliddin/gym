@@ -1,17 +1,33 @@
 package dev.gym.repository;
 
+import dev.gym.repository.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import java.util.Optional;
 
-public interface UserRepository<T, K> extends CrudRepository<T, K> {
+public interface UserRepository<T extends User, ID> extends JpaRepository<T, ID> {
 
-    Optional<T> findByUsername(String username);
+    @Query("SELECT u FROM User u WHERE u.username = :username")
+    Optional<T> findByUsername(@Param("username") String username);
 
-    void deleteByUsername(String username);
+    @Modifying
+    @Query("DELETE FROM User u WHERE u.username = :username")
+    void deleteByUsername(@Param("username") String username);
 
-    void updatePassword(String username, String newPassword);
+    @Modifying
+    @Query("UPDATE User u SET u.password = :password WHERE u.username = :username")
+    void updatePasswordByUsername(@Param("username") String username,
+                                  @Param("password") String password);
 
-    void setActiveStatus(String username, boolean activeStatus);
+    @Modifying
+    @Query("UPDATE User u SET u.isActive = :active WHERE u.username = :username")
+    void setActiveStatusByUsername(@Param("username") String username,
+                                   @Param("active") boolean active);
 
-    boolean existByUsername(String username);
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM User u WHERE u.username = :username")
+    boolean existsByUsername(@Param("username") String username);
 
 }

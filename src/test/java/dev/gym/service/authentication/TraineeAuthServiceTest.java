@@ -1,7 +1,8 @@
 package dev.gym.service.authentication;
 
-import dev.gym.repository.impl.UserRepositoryImpl;
+import dev.gym.repository.UserRepository;
 import dev.gym.repository.model.Trainee;
+import dev.gym.repository.model.User;
 import dev.gym.security.authentication.UserAuthService;
 import dev.gym.service.exception.InvalidUsernameOrPasswordException;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,17 +18,17 @@ class TraineeAuthServiceTest {
 
     static Trainee trainee;
     static UserAuthService traineeAuthService;
-    static UserRepositoryImpl traineeRepositoryImpl;
+    static UserRepository<User, Long> userRepository;
 
 
     @BeforeAll
     static void setup() {
-        traineeRepositoryImpl = mock(UserRepositoryImpl.class);
+        userRepository = mock(UserRepository.class);
         trainee = mock(Trainee.class);
-        traineeAuthService = new UserAuthService(traineeRepositoryImpl);
+        traineeAuthService = new UserAuthService(userRepository);
 
         when(trainee.getPassword()).thenReturn("password");
-        when(traineeRepositoryImpl.findByUsername("trainerUsername")).thenReturn(Optional.of(trainee));
+        when(userRepository.findByUsername("trainerUsername")).thenReturn(Optional.of(trainee));
     }
 
     @Test

@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import static dev.gym.controller.util.RestApiConst.TRAINEE_API_ROOT_PATH;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -36,11 +37,11 @@ class TraineeControllerTest {
     @BeforeEach
     void initialiseRestAssuredMockMvcStandalone() {
         RestAssuredMockMvc.standaloneSetup(traineeController);
-        RestAssuredMockMvc.basePath = "/api/v1/trainees";
+        RestAssuredMockMvc.basePath = TRAINEE_API_ROOT_PATH;
     }
 
     @Test
-    void givenValidCreateTraineeDto_whenRegister_thenReturnCreated() {
+    void givenValidCreateTraineeDto_whenRegister_thenReturnCreated() throws Exception {
 
         RegisterTraineeDto registerTraineeDto = new RegisterTraineeDto("John", "Doe", null, null);
 

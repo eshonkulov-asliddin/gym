@@ -17,7 +17,6 @@ public class RegisterTraineeDtoToTraineeConverter implements Converter<RegisterT
         trainee.setLastName(source.lastName());
         trainee.setDateOfBirth(source.dateOfBirth());
         trainee.setAddress(source.address());
-        trainee.setActive(true);
         return trainee;
     }
 }

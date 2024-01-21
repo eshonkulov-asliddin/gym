@@ -65,7 +65,7 @@ public class TrainerController {
             @ApiResponse(responseCode = "200", description = "Trainers found")
     })
     public ResponseEntity<List<TrainerDto>> getUnassignedTrainers(@RequestParam(name = "username") String username) {
-        return ResponseEntity.ok(trainerService.getAllActiveUnAssignedTrainers());
+        return ResponseEntity.ok(trainerService.getByIsActiveTrueAndAssignedTraineesIsEmpty());
     }
 
     @PutMapping("/{username}")

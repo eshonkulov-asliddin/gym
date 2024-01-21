@@ -26,10 +26,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -69,7 +67,6 @@ class TraineeServiceImplTest {
         when(credentialGenerator.generatePassword()).thenReturn("password");
 
         when(conversionService.convert(registerTraineeDto, Trainee.class)).thenReturn(trainee);
-        doNothing().when(traineeRepository).save(trainee);
         when(conversionService.convert(trainee, UserDto.class)).thenReturn(userDto);
 
         UserDto result = traineeService.register(registerTraineeDto);
@@ -81,23 +78,30 @@ class TraineeServiceImplTest {
 
     @Test
     void givenValidUsernameAndRequest_whenUpdate_thenReturnUpdatedTraineeDto() {
-        Trainee newTrainee = mock(Trainee.class);
-        Trainee oldTrainee = mock(Trainee.class);
-        TraineeDto traineeDto = mock(TraineeDto.class);
 
+        // mock TraineeDto and stub username method
+        TraineeDto traineeDto = mock(TraineeDto.class);
         when(traineeDto.username()).thenReturn("username");
 
+        // mock Trainee and stub update method
+        Trainee newTrainee = mock(Trainee.class);
+        Trainee oldTrainee = mock(Trainee.class);
         doNothing().when(oldTrainee).update(newTrainee);
 
+        // mock UpdateTraineeDto
         UpdateTraineeDto updateTraineeDto = mock(UpdateTraineeDto.class);
 
+        // stub findByUsername method
         when(traineeRepository.findByUsername("username")).thenReturn(Optional.of(oldTrainee));
+
+        // stub convert method
         when(conversionService.convert(updateTraineeDto, Trainee.class)).thenReturn(newTrainee);
-        doNothing().when(traineeRepository).save(oldTrainee);
         when(conversionService.convert(newTrainee, TraineeDto.class)).thenReturn(traineeDto);
 
+        // call update method
         TraineeDto updatedTraineeDto = traineeService.update("username", updateTraineeDto);
 
+        // assert
         assertNotNull(updatedTraineeDto);
         assertEquals("username", updatedTraineeDto.username());
     }
@@ -123,9 +127,8 @@ class TraineeServiceImplTest {
         when(traineeTrainerDto1.trainerUsername()).thenReturn("trainerUsername1");
         when(traineeTrainerDto2.trainerUsername()).thenReturn("trainerUsername2");
         when(traineeRepository.findByUsername("traineeUsername")).thenReturn(Optional.of(trainee));
-        when(trainerRepository.findTrainersByUsernames(trainerUsernamesList)).thenReturn(List.of(trainer1, trainer2));
+        when(trainerRepository.findByUsernameIn(trainerUsernamesList)).thenReturn(List.of(trainer1, trainer2));
         doNothing().when(trainee).addTrainers(List.of(trainer1, trainer2));
-        doNothing().when(traineeRepository).save(trainee);
         when(conversionService.convert(any(Trainer.class), eq(TrainerDto.class))).thenReturn(trainerDto);
 
         List<TrainerDto> trainerDtoList = traineeService.updateTrainers("traineeUsername", traineeTrainerDtoList);
@@ -156,9 +159,8 @@ class TraineeServiceImplTest {
         when(traineeTrainerDto1.trainerUsername()).thenReturn("trainerUsername1");
         when(traineeTrainerDto2.trainerUsername()).thenReturn("trainerUsername2");
         when(traineeRepository.findByUsername("traineeUsername")).thenReturn(Optional.of(trainee));
-        when(trainerRepository.findTrainersByUsernames(trainerUsernamesList)).thenReturn(List.of());
+        when(trainerRepository.findByUsernameIn(trainerUsernamesList)).thenReturn(List.of());
         doNothing().when(trainee).addTrainers(List.of());
-        doNothing().when(traineeRepository).save(trainee);
 
         List<TrainerDto> trainerDtoList = traineeService.updateTrainers("traineeUsername", traineeTrainerDtoList);
 
@@ -171,7 +173,7 @@ class TraineeServiceImplTest {
         Training training = new Training();
         TraineeTrainingDto traineeTrainingDto = mock(TraineeTrainingDto.class);
 
-        when(traineeRepository.existByUsername("traineeUsername")).thenReturn(true);
+        when(traineeRepository.existsByUsername("traineeUsername")).thenReturn(true);
         when(trainingRepository.findFor("traineeUsername", "trainerUsername", null, null)).thenReturn(List.of(training));
         when(conversionService.convert(any(Training.class), eq(TraineeTrainingDto.class))).thenReturn(traineeTrainingDto);
 
@@ -183,22 +185,8 @@ class TraineeServiceImplTest {
 
     @Test
     void givenInvalidUsername_whenGetAllTraineeTrainings_thenThrowNotFoundException() {
-        when(traineeRepository.existByUsername("traineeUsername")).thenThrow(new NotFoundException("Trainee not found"));
+        when(traineeRepository.existsByUsername("traineeUsername")).thenThrow(new NotFoundException("Trainee not found"));
         assertThrows(NotFoundException.class, () -> traineeService.getAllTrainingsByUsername("traineeUsername", null, null, null, null));
-    }
-
-    @Test
-    void givenValidId_whenDelete_thenSuccess() {
-        when(traineeRepository.existById(1L)).thenReturn(true);
-        when(traineeRepository.delete(1L)).thenReturn(true);
-
-        assertTrue(traineeService.deleteById(1L));
-    }
-
-    @Test
-    void givenInvalidId_whenDelete_thenFalse() {
-        when(traineeRepository.existById(1L)).thenReturn(false);
-        assertFalse(traineeService.deleteById(1L));
     }
 
     @Test

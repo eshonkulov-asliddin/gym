@@ -48,12 +48,13 @@ public class TrainerServiceImpl extends AbstractUserService<TrainerDto, Long, Tr
     public UserDto register(RegisterTrainerDto request) {
         // Convert the specialization string to the corresponding enum
         String trainerSpecializationString = request.specialization();
-        TrainingTypeEnum trainingTypeEnum = TrainingTypeEnum.valueOf(trainerSpecializationString);
+        TrainingTypeEnum trainingTypeName = TrainingTypeEnum.valueOf(trainerSpecializationString);
 
         Trainer trainer = conversionService.convert(request, Trainer.class);
         trainer.setUsername(credentialGenerator.generateUsername(trainer.getFirstName(), trainer.getLastName()));
         trainer.setPassword(credentialGenerator.generatePassword());
-        trainer.setSpecialization(trainingTypeRepository.findByType(trainingTypeEnum));
+        trainer.setSpecialization(trainingTypeRepository.findByTrainingTypeName(trainingTypeName));
+        trainer.setActive(true);
         save(trainer);
         return conversionService.convert(trainer, UserDto.class);
     }
@@ -63,14 +64,14 @@ public class TrainerServiceImpl extends AbstractUserService<TrainerDto, Long, Tr
         String trainerSpecializationString = request.specialization();
         TrainingTypeEnum trainerSpecializationEnum = TrainingTypeEnum.valueOf(trainerSpecializationString);
 
-        Trainer oldTrainer = userRepository.findByUsername(username)
+        Trainer oldTrainer = trainerRepository.findByUsername(username)
                 .orElseThrow(
                         () -> new NotFoundException(
                                 String.format(ExceptionConstants.NOT_FOUND_MESSAGE, "Trainer", username)
                         )
                 );
         Trainer newTrainer = conversionService.convert(request, Trainer.class);
-        newTrainer.setSpecialization(trainingTypeRepository.findByType(trainerSpecializationEnum));
+        newTrainer.setSpecialization(trainingTypeRepository.findByTrainingTypeName(trainerSpecializationEnum));
         newTrainer.setUsername(username);
         oldTrainer.update(newTrainer);
         save(oldTrainer);
@@ -79,7 +80,7 @@ public class TrainerServiceImpl extends AbstractUserService<TrainerDto, Long, Tr
 
     @Override
     public List<TrainerTrainingDto> getAllTrainingsByUsername(String trainerUsername, LocalDate from, LocalDate to, String traineeUsername) {
-        if (!userRepository.existByUsername(trainerUsername)){
+        if (!userRepository.existsByUsername(trainerUsername)){
             throw new NotFoundException(
                     String.format(
                             ExceptionConstants.NOT_FOUND_MESSAGE, "Trainer", trainerUsername
@@ -93,8 +94,8 @@ public class TrainerServiceImpl extends AbstractUserService<TrainerDto, Long, Tr
     }
 
     @Override
-    public List<TrainerDto> getAllActiveUnAssignedTrainers() {
-        List<Trainer> allActiveUnAssignedTrainers = trainerRepository.findActiveUnAssignedTrainers();
+    public List<TrainerDto> getByIsActiveTrueAndAssignedTraineesIsEmpty() {
+        List<Trainer> allActiveUnAssignedTrainers = trainerRepository.findByIsActiveTrueAndAssignedUsersIsEmpty();
         return allActiveUnAssignedTrainers.stream()
                 .map(trainer -> conversionService.convert(trainer, TrainerDto.class))
                 .toList();

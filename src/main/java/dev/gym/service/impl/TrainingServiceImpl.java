@@ -13,6 +13,7 @@ import dev.gym.service.exception.util.ExceptionConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TrainingServiceImpl extends AbstractCrudService<CreateTrainingDto, Long, Training> implements TrainingService {
@@ -38,6 +39,7 @@ public class TrainingServiceImpl extends AbstractCrudService<CreateTrainingDto, 
     }
 
     @Override
+    @Transactional
     public void addTraining(CreateTrainingDto request) {
         String traineeUsername = request.traineeUsername();
         String trainerUsername = request.trainerUsername();

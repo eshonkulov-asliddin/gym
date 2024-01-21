@@ -15,30 +15,25 @@ public class TrainerToTrainerDtoConverter implements Converter<Trainer, TrainerD
 
     @Override
     public TrainerDto convert(Trainer source) {
-        return new TrainerDto
-                (
-                        source.getUsername(),
-                        source.getFirstName(),
-                        source.getLastName(),
-                        source.getSpecialization(),
-                        source.isActive(),
-                        convertTrainees(source.getTrainees())
+        return new TrainerDto(  source.getUsername(),
+                                source.getFirstName(),
+                                source.getLastName(),
+                                source.getSpecialization(),
+                                source.isActive(),
+                                convertTrainees(source.getTrainees())
                 );
     }
 
     private List<TraineeDto> convertTrainees(Set<Trainee> trainees) {
         return trainees.stream()
-                .map(trainee -> new TraineeDto
-                        (
+                .map(trainee -> new TraineeDto(
                                 trainee.getUsername(),
                                 trainee.getFirstName(),
                                 trainee.getLastName(),
                                 trainee.getDateOfBirth(),
                                 trainee.getAddress(),
                                 trainee.isActive(),
-                                null
-                        )
-                )
+                                null))
                 .toList();
     }
 }

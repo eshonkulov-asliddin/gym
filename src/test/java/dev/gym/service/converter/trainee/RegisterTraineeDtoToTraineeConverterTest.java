@@ -11,7 +11,6 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,6 +36,5 @@ class RegisterTraineeDtoToTraineeConverterTest {
         assertEquals("Doe", trainee.getLastName());
         assertEquals(LocalDate.of(1990, 1, 1), trainee.getDateOfBirth());
         assertEquals("123 Main St.", trainee.getAddress());
-        assertTrue(trainee.isActive());
     }
 }

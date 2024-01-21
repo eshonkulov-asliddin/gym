@@ -28,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -66,8 +65,7 @@ class TrainerServiceImplTest {
         when(conversionService.convert(registerTrainerDto, Trainer.class)).thenReturn(trainer);
         when(credentialGenerator.generateUsername("firstName", "lastName")).thenReturn("username");
         when(credentialGenerator.generatePassword()).thenReturn("password");
-        when(trainingTypeRepository.findByType(any())).thenReturn(trainingType);
-        doNothing().when(trainerRepository).save(trainer);
+        when(trainingTypeRepository.findByTrainingTypeName(any())).thenReturn(trainingType);
         when(conversionService.convert(trainer, UserDto.class)).thenReturn(userDto);
 
         UserDto registeredUserDto = trainerService.register(registerTrainerDto);
@@ -89,8 +87,7 @@ class TrainerServiceImplTest {
 
         when(trainerRepository.findByUsername("trainerUsername")).thenReturn(Optional.of(oldTrainer));
         when(conversionService.convert(updateTrainerDto, Trainer.class)).thenReturn(newTrainer);
-        when(trainingTypeRepository.findByType(any())).thenReturn(trainingType);
-        doNothing().when(trainerRepository).save(oldTrainer);
+        when(trainingTypeRepository.findByTrainingTypeName(any())).thenReturn(trainingType);
         when(conversionService.convert(newTrainer, TrainerDto.class)).thenReturn(trainerDto);
         when(trainerDto.username()).thenReturn("trainerUsername");
 
@@ -115,7 +112,7 @@ class TrainerServiceImplTest {
         Training training = new Training();
         TrainerTrainingDto trainerTrainingDto = mock(TrainerTrainingDto.class);
 
-        when(trainerRepository.existByUsername("trainerUsername")).thenReturn(true);
+        when(trainerRepository.existsByUsername("trainerUsername")).thenReturn(true);
         when(trainingRepository.findFor("traineeUsername", "trainerUsername", null, null)).thenReturn(List.of(training));
         when(conversionService.convert(any(Training.class), eq(TrainerTrainingDto.class))).thenReturn(trainerTrainingDto);
 
@@ -127,7 +124,7 @@ class TrainerServiceImplTest {
 
     @Test
     void givenInvalidUsername_whenGetAllTraineeTrainings_thenThrowNotFoundException() {
-        when(trainerRepository.existByUsername("trainerUsername")).thenThrow(new NotFoundException("Trainer not found"));
+        when(trainerRepository.existsByUsername("trainerUsername")).thenThrow(new NotFoundException("Trainer not found"));
         assertThrows(NotFoundException.class, () -> trainerService.getAllTrainingsByUsername("trainerUsername", null, null, null));
     }
 
@@ -136,10 +133,10 @@ class TrainerServiceImplTest {
         Trainer trainer = mock(Trainer.class);
         TrainerDto trainerDto = mock(TrainerDto.class);
 
-        when(trainerRepository.findActiveUnAssignedTrainers()).thenReturn(List.of(trainer));
+        when(trainerRepository.findByIsActiveTrueAndAssignedUsersIsEmpty()).thenReturn(List.of(trainer));
         when(conversionService.convert(any(Trainer.class), eq(TrainerDto.class))).thenReturn(trainerDto);
 
-        List<TrainerDto> allActiveUnAssignedTrainers = trainerService.getAllActiveUnAssignedTrainers();
+        List<TrainerDto> allActiveUnAssignedTrainers = trainerService.getByIsActiveTrueAndAssignedTraineesIsEmpty();
 
         assert allActiveUnAssignedTrainers != null;
         assertEquals(1, allActiveUnAssignedTrainers.size());
