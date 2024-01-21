@@ -20,7 +20,6 @@ import dev.gym.service.exception.util.ExceptionConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -73,7 +72,6 @@ public class TraineeServiceImpl extends AbstractUserService<TraineeDto, Long, Tr
     }
 
     @Override
-    @Transactional
     public List<TrainerDto> updateTrainers(String username, List<TraineeTrainerDto> trainerDtoList) {
         Trainee trainee = traineeRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException(

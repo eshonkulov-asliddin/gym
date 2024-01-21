@@ -1,4 +1,4 @@
-l#set active profile
+#set active profile
 spring:
   profiles:
     active: production
