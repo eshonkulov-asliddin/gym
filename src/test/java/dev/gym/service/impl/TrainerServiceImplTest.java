@@ -3,10 +3,11 @@ package dev.gym.service.impl;
 import dev.gym.repository.TrainerRepository;
 import dev.gym.repository.TrainingRepository;
 import dev.gym.repository.TrainingTypeRepository;
-import dev.gym.repository.datasource.credential.CredentialGenerator;
 import dev.gym.repository.model.Trainer;
 import dev.gym.repository.model.Training;
 import dev.gym.repository.model.TrainingType;
+import dev.gym.security.credential.CredentialGenerator;
+import dev.gym.security.jwt.JwtUtil;
 import dev.gym.service.dto.RegisterTrainerDto;
 import dev.gym.service.dto.TrainerDto;
 import dev.gym.service.dto.TrainerTrainingDto;
@@ -44,35 +45,35 @@ class TrainerServiceImplTest {
     private CredentialGenerator credentialGenerator;
     @Mock
     private ConversionService conversionService;
+    @Mock
+    private JwtUtil jwtUtil;
     @InjectMocks
     private TrainerServiceImpl trainerService;
 
     @Test
     void givenValidRegisterTrainerDto_whenRegister_thenReturnUserDto() {
         RegisterTrainerDto registerTrainerDto = mock(RegisterTrainerDto.class);
-        UserDto userDto = mock(UserDto.class);
         Trainer trainer = mock(Trainer.class);
         TrainingType trainingType = mock(TrainingType.class);
 
         when(registerTrainerDto.specialization()).thenReturn("STRENGTH");
 
-        when(userDto.username()).thenReturn("username");
-        when(userDto.password()).thenReturn("password");
-
         when(trainer.getFirstName()).thenReturn("firstName");
         when(trainer.getLastName()).thenReturn("lastName");
+        when(trainer.getUsername()).thenReturn("username");
 
         when(conversionService.convert(registerTrainerDto, Trainer.class)).thenReturn(trainer);
         when(credentialGenerator.generateUsername("firstName", "lastName")).thenReturn("username");
         when(credentialGenerator.generatePassword()).thenReturn("password");
+        when(jwtUtil.generateToken("username")).thenReturn("token");
         when(trainingTypeRepository.findByTrainingTypeName(any())).thenReturn(trainingType);
-        when(conversionService.convert(trainer, UserDto.class)).thenReturn(userDto);
+        when(trainerRepository.save(trainer)).thenReturn(trainer);
 
         UserDto registeredUserDto = trainerService.register(registerTrainerDto);
 
         assertNotNull(registeredUserDto);
         assertEquals("username", registeredUserDto.username());
-        assertEquals("password", registeredUserDto.password());
+        assertEquals("token", registeredUserDto.token());
     }
 
     @Test
