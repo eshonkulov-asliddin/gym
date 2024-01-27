@@ -1,6 +1,5 @@
 package dev.gym.controller;
 
-import dev.gym.security.authentication.UserAuthService;
 import dev.gym.service.impl.UserServiceImpl;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,18 +8,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static dev.gym.controller.util.RestApiConst.USER_API_ROOT_PATH;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
     @Mock
-    private UserAuthService userAuthService;
-    @Mock
     private UserServiceImpl userService;
+    @Mock
+    private PasswordEncoder passwordEncoder;
     @InjectMocks
     private UserController userController;
 
@@ -31,40 +32,12 @@ class UserControllerTest {
     }
 
     @Test
-    void givenValidUsernameAndPassword_whenLogin_thenSuccess() {
-
-        doNothing().when(userAuthService).authenticate("John.Doe", "password");
-
-        given()
-            .param("username", "John.Doe")
-            .param("password", "password")
-        .when()
-            .get("/login")
-        .then()
-            .log().ifValidationFails()
-            .statusCode(200);
-    }
-
-    @Test
-    void givenRequest_whenUsernameOrPasswordMissing_thenBadRequest() {
-
-        given()
-            .param("username", "John.Doe")
-        .when()
-            .get("/login")
-        .then()
-            .log().ifValidationFails()
-            .statusCode(400);
-    }
-
-    @Test
     void givenValidUsernameAndPasswordWitNewPassword_whenUpdatePassword_thenSuccess() {
-        doNothing().when(userAuthService).authenticate("John.Doe", "password");
+        when(passwordEncoder.encode("newPassword")).thenReturn("newPassword");
         doNothing().when(userService).updatePassword("John.Doe", "newPassword");
 
         given()
             .pathParam("username", "John.Doe")
-            .param("old_password", "password")
             .param("new_password", "newPassword")
         .when()
             .put("/{username}/credentials")
