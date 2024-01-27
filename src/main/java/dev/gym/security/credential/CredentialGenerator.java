@@ -1,4 +1,4 @@
-package dev.gym.repository.datasource.credential;
+package dev.gym.security.credential;
 
 public interface CredentialGenerator {
 
