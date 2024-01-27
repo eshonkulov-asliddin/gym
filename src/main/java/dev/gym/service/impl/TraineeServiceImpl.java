@@ -3,10 +3,11 @@ package dev.gym.service.impl;
 import dev.gym.repository.TraineeRepository;
 import dev.gym.repository.TrainerRepository;
 import dev.gym.repository.TrainingRepository;
-import dev.gym.repository.datasource.credential.CredentialGenerator;
 import dev.gym.repository.model.Trainee;
 import dev.gym.repository.model.Trainer;
 import dev.gym.repository.model.Training;
+import dev.gym.security.credential.CredentialGenerator;
+import dev.gym.security.jwt.JwtUtil;
 import dev.gym.service.TraineeService;
 import dev.gym.service.dto.RegisterTraineeDto;
 import dev.gym.service.dto.TraineeDto;
@@ -32,19 +33,21 @@ public class TraineeServiceImpl extends AbstractUserService<TraineeDto, Long, Tr
     private final TrainingRepository trainingRepository;
     private final CredentialGenerator credentialGenerator;
     private final ConversionService conversionService;
+    private final JwtUtil jwtUtil;
 
     @Autowired
     public TraineeServiceImpl(TraineeRepository traineeRepository,
                               TrainerRepository trainerRepository,
                               TrainingRepository trainingRepository,
                               CredentialGenerator credentialGenerator,
-                              ConversionService conversionService) {
+                              ConversionService conversionService, JwtUtil jwtUtil) {
         super(traineeRepository, conversionService);
         this.traineeRepository = traineeRepository;
         this.trainerRepository = trainerRepository;
         this.trainingRepository = trainingRepository;
         this.credentialGenerator = credentialGenerator;
         this.conversionService = conversionService;
+        this.jwtUtil = jwtUtil;
     }
 
     public UserDto register(RegisterTraineeDto request) {
@@ -53,7 +56,9 @@ public class TraineeServiceImpl extends AbstractUserService<TraineeDto, Long, Tr
         trainee.setPassword(credentialGenerator.generatePassword());
         trainee.setActive(true);
         save(trainee);
-        return conversionService.convert(trainee, UserDto.class);
+        // generate token
+        String token = jwtUtil.generateToken(trainee.getUsername());
+        return new UserDto(trainee.getUsername(), token);
     }
 
     public TraineeDto update(String username, UpdateTraineeDto request) {
