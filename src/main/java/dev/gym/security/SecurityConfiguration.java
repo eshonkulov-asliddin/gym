@@ -2,7 +2,7 @@ package dev.gym.security;
 
 import dev.gym.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,8 +25,12 @@ import java.security.SecureRandom;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Value("${registrationEndpoints}")
+    private String[] registrationEndpoints;
+    @Value("${swaggerEndpoints}")
+    private String[] swaggerEndpoints;
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -57,13 +61,4 @@ public class SecurityConfiguration {
         int strength = 10;
         return new BCryptPasswordEncoder(strength, new SecureRandom());
     }
-
-    private static final String[] registrationEndpoints = {
-            "/api/v1/trainers/register",
-            "/api/v1/trainees/register"
-    };
-    private static final String[] swaggerEndpoints = {
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-    };
 }
