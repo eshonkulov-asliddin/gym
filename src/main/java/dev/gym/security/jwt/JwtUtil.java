@@ -18,16 +18,16 @@ import java.util.function.Function;
 public class JwtUtil {
 
     @Value("${jwt.secret.key}")
-    private String SECRET;
+    private String secret;
     @Value("${jwt.expiration.time}")
-    private long EXPIRATION_TIME;
+    private long expirationTime;
 
     public String generateToken(String username) {
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, SECRET)
+                .expiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
 
@@ -46,7 +46,7 @@ public class JwtUtil {
 
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
-                .setSigningKey(SECRET)
+                .setSigningKey(secret)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
