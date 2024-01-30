@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -37,7 +38,7 @@ public class LoginAttemptService {
         int attempts;
         try {
             attempts = attemptsCache.get(key);
-        } catch (final Exception e) {
+        } catch (final ExecutionException e) {
             attempts = 0;
         }
         attempts++;
@@ -59,6 +60,5 @@ public class LoginAttemptService {
         }
         return request.getRemoteAddr();
     }
-
 
 }
