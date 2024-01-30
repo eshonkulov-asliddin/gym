@@ -38,6 +38,7 @@ dependencies {
 	testImplementation "io.rest-assured:spring-mock-mvc:$restAssuredVersion"
 	testImplementation "org.testcontainers:mysql:$testContainersVersion"
 	testImplementation "org.testcontainers:junit-jupiter:$testContainersVersion"
+	testImplementation "org.springframework.security:spring-security-test:$springSecurityTestVersion"
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
