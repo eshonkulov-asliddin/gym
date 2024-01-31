@@ -3,10 +3,11 @@ package dev.gym.service.impl;
 import dev.gym.repository.TraineeRepository;
 import dev.gym.repository.TrainerRepository;
 import dev.gym.repository.TrainingRepository;
-import dev.gym.repository.datasource.credential.CredentialGenerator;
 import dev.gym.repository.model.Trainee;
 import dev.gym.repository.model.Trainer;
 import dev.gym.repository.model.Training;
+import dev.gym.security.credential.CredentialGenerator;
+import dev.gym.security.jwt.JwtUtil;
 import dev.gym.service.dto.RegisterTraineeDto;
 import dev.gym.service.dto.TraineeDto;
 import dev.gym.service.dto.TraineeTrainerDto;
@@ -47,6 +48,8 @@ class TraineeServiceImplTest {
     private CredentialGenerator credentialGenerator;
     @Mock
     private ConversionService conversionService;
+    @Mock
+    private JwtUtil jwtUtil;
     @InjectMocks
     private TraineeServiceImpl traineeService;
 
@@ -59,21 +62,19 @@ class TraineeServiceImplTest {
 
         when(trainee.getFirstName()).thenReturn("firstName");
         when(trainee.getLastName()).thenReturn("lastName");
-
-        when(userDto.username()).thenReturn("username");
-        when(userDto.password()).thenReturn("password");
-
-        when(credentialGenerator.generateUsername(trainee.getFirstName(), trainee.getLastName())).thenReturn("username");
-        when(credentialGenerator.generatePassword()).thenReturn("password");
+        when(trainee.getUsername()).thenReturn("username");
+        when(traineeRepository.save(trainee)).thenReturn(trainee);
 
         when(conversionService.convert(registerTraineeDto, Trainee.class)).thenReturn(trainee);
-        when(conversionService.convert(trainee, UserDto.class)).thenReturn(userDto);
+        when(credentialGenerator.generateUsername(trainee.getFirstName(), trainee.getLastName())).thenReturn("username");
+        when(credentialGenerator.generatePassword()).thenReturn("password");
+        when(jwtUtil.generateToken("username")).thenReturn("token");
 
         UserDto result = traineeService.register(registerTraineeDto);
 
         assertNotNull(result);
         assertEquals("username", result.username());
-        assertEquals("password", result.password());
+        assertEquals("token", result.token());
     }
 
     @Test

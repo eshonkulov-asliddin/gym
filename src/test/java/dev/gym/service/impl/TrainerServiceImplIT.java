@@ -6,7 +6,6 @@ import dev.gym.service.TrainerService;
 import dev.gym.service.dto.RegisterTrainerDto;
 import dev.gym.service.dto.TrainerDto;
 import dev.gym.service.dto.UserDto;
-import dev.gym.service.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
@@ -53,9 +52,7 @@ class TrainerServiceImplIT {
 
         // Delete the trainer by trainerUsername
         trainerService.deleteByUsername(username);
-        assertThrows(NotFoundException.class,
-                () -> trainerService.getByUsername(username)
-        );
+        assertEquals(Optional.empty(), trainerService.getByUsername(username));
     }
 
     @Test

@@ -11,6 +11,7 @@ import dev.gym.service.dto.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,11 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.List;
 
+import static dev.gym.controller.util.RestApiConst.AUTHENTICATION_NAME;
 import static dev.gym.controller.util.RestApiConst.TRAINEE_API_ROOT_PATH;
 
 @RestController
 @RequestMapping(value = TRAINEE_API_ROOT_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Trainee API", description = "Operations to manage trainees")
+@SecurityRequirement(name = AUTHENTICATION_NAME) // security requirement for swagger
 @RequiredArgsConstructor
 public class TraineeController {
 
@@ -48,8 +51,7 @@ public class TraineeController {
             @ApiResponse(responseCode = "400", description = "Invalid input")
     })
     public ResponseEntity<UserDto> register(@RequestBody @Valid RegisterTraineeDto request) {
-        UserDto registered = traineeService.register(request);
-        return new ResponseEntity<>(registered, HttpStatus.CREATED);
+        return new ResponseEntity<>(traineeService.register(request), HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/{username}")

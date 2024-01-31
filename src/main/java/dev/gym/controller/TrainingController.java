@@ -7,6 +7,7 @@ import dev.gym.service.dto.TrainingTypeDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static dev.gym.controller.util.RestApiConst.AUTHENTICATION_NAME;
 import static dev.gym.controller.util.RestApiConst.TRAINING_API_ROOT_PATH;
 
 @RestController
 @RequestMapping(value = TRAINING_API_ROOT_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Training API", description = "Operations to manage trainings")
+@SecurityRequirement(name = AUTHENTICATION_NAME) // security requirement for swagger
 @RequiredArgsConstructor
 public class TrainingController {
 
