@@ -1,9 +1,5 @@
 package dev.gym.controller;
 
-import dev.gym.client.workload.ActionType;
-import dev.gym.client.workload.TrainerWorkload;
-import dev.gym.client.workload.TrainerWorkloadClient;
-import dev.gym.service.TrainerService;
 import dev.gym.service.TrainingService;
 import dev.gym.service.TrainingTypeService;
 import dev.gym.service.dto.CreateTrainingDto;
@@ -13,11 +9,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,12 +36,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class TrainingController {
 
     private final TrainingService trainingService;
-    private final TrainerService trainerService;
     private final TrainingTypeService<TrainingTypeDto> trainingTypeService;
-    private final TrainerWorkloadClient trainerWorkloadClient;
-
-    @Autowired
-    private HttpServletRequest httpServletRequest;
 
     @PostMapping
     @ResponseStatus(code = CREATED)
@@ -59,7 +48,6 @@ public class TrainingController {
     })
     public void addTraining(@RequestBody @Valid CreateTrainingDto request) {
         trainingService.addTraining(request);
-        notifyWorkloadService(request, ActionType.ADD);
     }
 
     @GetMapping("/types")
@@ -70,25 +58,5 @@ public class TrainingController {
     public ResponseEntity<List<TrainingTypeDto>> getTrainingTypes() {
         List<TrainingTypeDto> trainingTypeDtoList = trainingTypeService.getAll();
         return ResponseEntity.ok(trainingTypeDtoList);
-    }
-
-    protected void notifyWorkloadService(CreateTrainingDto trainingDto, ActionType actionType) {
-
-        // get trainer by username
-        trainerService.getByUsername(trainingDto.trainerUsername()).ifPresent(
-                trainerDto -> {
-                    TrainerWorkload trainerWorkload = new TrainerWorkload(
-                            trainerDto.username(),
-                            trainerDto.firstName(),
-                            trainerDto.lastName(),
-                            trainerDto.isActive(),
-                            trainingDto.trainingDate(),
-                            actionType == ActionType.ADD ? trainingDto.trainingDuration() : -trainingDto.trainingDuration(),
-                            actionType);
-
-                    String token = httpServletRequest.getHeader("Authorization");
-                    trainerWorkloadClient.notifyWorkloadService(token, trainerWorkload);
-                }
-        );
     }
 }
