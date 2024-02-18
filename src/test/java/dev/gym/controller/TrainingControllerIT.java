@@ -2,6 +2,7 @@ package dev.gym.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.gym.GymApplication;
+import dev.gym.controller.util.RestApiConst;
 import dev.gym.repository.model.enums.TrainingTypeEnum;
 import dev.gym.service.dto.CreateTrainingDto;
 import dev.gym.service.dto.RegisterTraineeDto;
@@ -21,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = GymApplication.class)
 @AutoConfigureMockMvc
-public class TrainingControllerIT {
+class TrainingControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,7 +47,7 @@ public class TrainingControllerIT {
             LocalDate.now().plusDays(3),
             60
         );
-        mockMvc.perform(post("/api/v1/trainings")
+        mockMvc.perform(post(RestApiConst.TRAINING_API_ROOT_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createTrainingDto)))
                 .andExpect(status().isCreated());
@@ -55,7 +56,7 @@ public class TrainingControllerIT {
 
     void createTrainer() throws Exception {
         RegisterTrainerDto trainerDto = new RegisterTrainerDto(trainerFirstName, trainerLastName, TrainingTypeEnum.STRENGTH.toString());
-        mockMvc.perform(post("/api/v1/trainers/register")
+        mockMvc.perform(post(RestApiConst.TRAINER_API_ROOT_PATH + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(trainerDto)))
                 .andExpect(status().isCreated());
@@ -63,7 +64,7 @@ public class TrainingControllerIT {
 
     void createTrainee() throws Exception {
         RegisterTraineeDto traineeDto = new RegisterTraineeDto(traineeFirstName, traineeLastName, LocalDate.now().minusYears(20), "Test Address");
-        mockMvc.perform(post("/api/v1/trainees/register")
+        mockMvc.perform(post(RestApiConst.TRAINEE_API_ROOT_PATH + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(traineeDto)))
                 .andExpect(status().isCreated());
