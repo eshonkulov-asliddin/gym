@@ -9,6 +9,11 @@ spring:
     openfeign:
       circuitbreaker:
         enabled: true
+resilience4j:
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 1000
 
 #actuator configuration
 management:

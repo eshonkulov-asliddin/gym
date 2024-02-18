@@ -11,7 +11,12 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
+
+#disable for integration test
+eurika:
+  client:
+    enabled: false
 
 #jwt secret key
 jwt:
