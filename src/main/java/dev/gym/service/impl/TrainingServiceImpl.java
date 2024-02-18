@@ -1,11 +1,15 @@
 package dev.gym.service.impl;
 
+import dev.gym.client.workload.ActionType;
+import dev.gym.client.workload.TrainerWorkload;
+import dev.gym.client.workload.TrainerWorkloadClient;
 import dev.gym.repository.TraineeRepository;
 import dev.gym.repository.TrainerRepository;
 import dev.gym.repository.TrainingRepository;
 import dev.gym.repository.model.Trainee;
 import dev.gym.repository.model.Trainer;
 import dev.gym.repository.model.Training;
+import dev.gym.security.credential.CredentialProvider;
 import dev.gym.service.TrainingService;
 import dev.gym.service.dto.CreateTrainingDto;
 import dev.gym.service.exception.NotFoundException;
@@ -21,16 +25,22 @@ public class TrainingServiceImpl extends AbstractCrudService<CreateTrainingDto, 
     private final TraineeRepository traineeRepository;
     private final TrainerRepository trainerRepository;
     private final ConversionService conversionService;
+    private final TrainerWorkloadClient trainerWorkloadClient;
+    private final CredentialProvider credentialProvider;
 
     @Autowired
     public TrainingServiceImpl(TrainingRepository trainingRepository,
                                TraineeRepository traineeRepository,
                                TrainerRepository trainerRepository,
-                               ConversionService conversionService) {
+                               ConversionService conversionService,
+                               TrainerWorkloadClient trainerWorkloadClient,
+                               CredentialProvider credentialProvider) {
         super(trainingRepository, conversionService);
         this.traineeRepository = traineeRepository;
         this.trainerRepository = trainerRepository;
         this.conversionService = conversionService;
+        this.trainerWorkloadClient = trainerWorkloadClient;
+        this.credentialProvider = credentialProvider;
     }
 
     @Override
@@ -67,5 +77,14 @@ public class TrainingServiceImpl extends AbstractCrudService<CreateTrainingDto, 
         training.setTrainingType(trainer.getSpecialization());
         training.setTrainer(trainer);
         save(training);
+
+        TrainerWorkload trainerWorkload = new TrainerWorkload(trainer.getUsername(), trainer.getFirstName(), trainer.getLastName(), trainer.isActive(),
+                training.getTrainingDate(), request.trainingDuration(), ActionType.ADD);
+        notifyWorkloadService(trainerWorkload);
+    }
+
+    protected void notifyWorkloadService(TrainerWorkload trainerWorkload) {
+        String credential = credentialProvider.getCredential();
+        trainerWorkloadClient.notifyWorkloadService(credential, trainerWorkload);
     }
 }

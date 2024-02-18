@@ -10,7 +10,7 @@ public class TrainerWorkloadFallback implements TrainerWorkloadClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(TrainerWorkloadFallback.class);
 
     @Override
-    public void notifyWorkloadService(String token, TrainerWorkload trainerWorkload) {
+    public void notifyWorkloadService(String authToken, TrainerWorkload trainerWorkload) {
         LOGGER.info("trainer-workload service crashed");
     }
 }
