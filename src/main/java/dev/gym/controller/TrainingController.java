@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +31,6 @@ import static org.springframework.http.HttpStatus.CREATED;
 @Tag(name = "Training API", description = "Operations to manage trainings")
 @SecurityRequirement(name = AUTHENTICATION_NAME) // security requirement for swagger
 @RequiredArgsConstructor
-@Setter
 public class TrainingController {
 
     private final TrainingService trainingService;
