@@ -65,3 +65,6 @@ registrationEndpoints:
 swaggerEndpoints:
   /v3/api-docs/**, 
   /swagger-ui/**
+
+#workload service url
+workloadServiceUrl: localhost:8082
