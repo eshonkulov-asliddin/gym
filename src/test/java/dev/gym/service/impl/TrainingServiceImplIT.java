@@ -1,6 +1,5 @@
 package dev.gym.service.impl;
 
-import dev.gym.GymApplication;
 import dev.gym.repository.TraineeRepository;
 import dev.gym.repository.TrainerRepository;
 import dev.gym.repository.model.Trainee;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -23,7 +23,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {GymApplication.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class TrainingServiceImplIT {
 
     private final TraineeRepository traineeRepository;
@@ -46,7 +46,8 @@ class TrainingServiceImplIT {
     }
 
     @Test
-    void testCRUD() {
+    @WithMockUser(username = "user", password = "token")
+    void testAddTraining() {
         // create Trainee
         Trainee trainee = createTrainee();
 

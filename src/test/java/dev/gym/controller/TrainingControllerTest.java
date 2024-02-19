@@ -1,5 +1,6 @@
 package dev.gym.controller;
 
+import dev.gym.service.TrainerService;
 import dev.gym.service.TrainingService;
 import dev.gym.service.TrainingTypeService;
 import dev.gym.service.dto.CreateTrainingDto;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.convert.ConversionService;
 
 import java.time.LocalDate;
 
@@ -25,9 +25,9 @@ class TrainingControllerTest {
     @Mock
     private TrainingService trainingService;
     @Mock
-    private TrainingTypeService trainingTypeService;
+    private TrainerService trainerService;
     @Mock
-    private ConversionService conversionService;
+    private TrainingTypeService trainingTypeService;
     @InjectMocks
     private TrainingController trainingController;
 
@@ -49,7 +49,7 @@ class TrainingControllerTest {
             .post()
         .then()
             .log().ifValidationFails()
-            .statusCode(200);
+            .statusCode(201);
     }
 
     @Test
@@ -75,4 +75,5 @@ class TrainingControllerTest {
             .log().ifValidationFails()
             .statusCode(200);
     }
+
 }
