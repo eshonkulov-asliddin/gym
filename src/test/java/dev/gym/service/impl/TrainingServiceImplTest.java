@@ -1,7 +1,7 @@
 package dev.gym.service.impl;
 
-import dev.gym.client.workload.TrainerWorkload;
-import dev.gym.client.workload.TrainerWorkloadClient;
+import dev.gym.service.client.workload.TrainerWorkload;
+import dev.gym.service.client.workload.TrainerWorkloadClient;
 import dev.gym.repository.TraineeRepository;
 import dev.gym.repository.TrainerRepository;
 import dev.gym.repository.TrainingRepository;

@@ -1,4 +1,4 @@
-package dev.gym.client.workload;
+package dev.gym.service.client.workload;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

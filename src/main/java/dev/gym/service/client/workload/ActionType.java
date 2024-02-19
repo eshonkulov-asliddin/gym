@@ -1,4 +1,4 @@
-package dev.gym.client.workload;
+package dev.gym.service.client.workload;
 
 public enum ActionType {
     ADD,
