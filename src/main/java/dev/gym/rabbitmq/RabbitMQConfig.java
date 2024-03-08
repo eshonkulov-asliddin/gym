@@ -1,5 +1,6 @@
 package dev.gym.rabbitmq;
 
+import org.slf4j.MDC;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -52,6 +53,11 @@ public class RabbitMQConfig {
         RabbitTemplate rabbitTemplate = new RabbitTemplate();
         rabbitTemplate.setConnectionFactory(connectionFactory);
         rabbitTemplate.setMessageConverter(messageConverter());
+        rabbitTemplate.setBeforePublishPostProcessors(
+                 message -> {
+                    message.getMessageProperties().setHeader("X-Transaction-ID", MDC.get("transactionId"));
+                    return message;
+                });
         return rabbitTemplate;
     }
 
