@@ -1,19 +1,20 @@
 package dev.gym.service.impl;
 
-import dev.gym.service.client.workload.ActionType;
-import dev.gym.service.client.workload.TrainerWorkload;
-import dev.gym.service.client.workload.TrainerWorkloadClient;
+import dev.gym.rabbitmq.WorkloadProducer;
 import dev.gym.repository.TraineeRepository;
 import dev.gym.repository.TrainerRepository;
 import dev.gym.repository.TrainingRepository;
 import dev.gym.repository.model.Trainee;
 import dev.gym.repository.model.Trainer;
 import dev.gym.repository.model.Training;
-import dev.gym.security.credential.CredentialProvider;
 import dev.gym.service.TrainingService;
+import dev.gym.service.client.workload.ActionType;
+import dev.gym.service.client.workload.TrainerWorkload;
 import dev.gym.service.dto.CreateTrainingDto;
 import dev.gym.service.exception.NotFoundException;
 import dev.gym.service.exception.util.ExceptionConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
@@ -22,25 +23,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TrainingServiceImpl extends AbstractCrudService<CreateTrainingDto, Long, Training> implements TrainingService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrainingServiceImpl.class);
     private final TraineeRepository traineeRepository;
     private final TrainerRepository trainerRepository;
     private final ConversionService conversionService;
-    private final TrainerWorkloadClient trainerWorkloadClient;
-    private final CredentialProvider credentialProvider;
+    private final WorkloadProducer workloadProducer;
 
     @Autowired
     public TrainingServiceImpl(TrainingRepository trainingRepository,
                                TraineeRepository traineeRepository,
                                TrainerRepository trainerRepository,
                                ConversionService conversionService,
-                               TrainerWorkloadClient trainerWorkloadClient,
-                               CredentialProvider credentialProvider) {
+                               WorkloadProducer workloadProducer) {
         super(trainingRepository, conversionService);
         this.traineeRepository = traineeRepository;
         this.trainerRepository = trainerRepository;
         this.conversionService = conversionService;
-        this.trainerWorkloadClient = trainerWorkloadClient;
-        this.credentialProvider = credentialProvider;
+        this.workloadProducer = workloadProducer;
     }
 
     @Override
@@ -84,7 +83,7 @@ public class TrainingServiceImpl extends AbstractCrudService<CreateTrainingDto, 
     }
 
     protected void notifyWorkloadService(TrainerWorkload trainerWorkload) {
-        String credential = credentialProvider.getCredential();
-        trainerWorkloadClient.notifyWorkloadService(credential, trainerWorkload);
+        workloadProducer.send(trainerWorkload);
+        LOGGER.info("Trainer workload sent to the queue: {}", trainerWorkload);
     }
 }
