@@ -23,3 +23,5 @@ registrationEndpoints:
 swaggerEndpoints:
   /v3/api-docs/**,
   /swagger-ui/**
+
+serverUrl: http://localhost
