@@ -23,10 +23,6 @@ repositories {
 	mavenCentral()
 }
 
-ext {
-	set('springCloudVersion', "2023.0.0")
-}
-
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'io.micrometer:micrometer-registry-prometheus'
@@ -39,6 +35,8 @@ dependencies {
 	implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion"
 	implementation "com.google.guava:guava:$guavaVersion"
 	implementation "io.jsonwebtoken:jjwt:$jjwtVersion"
+	implementation "io.cucumber:cucumber-java:$cucumberVersion"
+	implementation "io.cucumber:cucumber-spring:$cucumberVersion"
 	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
 	testImplementation "io.rest-assured:spring-mock-mvc:$restAssuredVersion"
 	testImplementation "org.testcontainers:mysql:$testContainersVersion"
@@ -50,12 +48,7 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
+	testImplementation "io.cucumber:cucumber-junit:$cucumberVersion"
 }
 
 test {
