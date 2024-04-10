@@ -16,6 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -24,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
 class TrainingServiceImplIT {
 
     private final TraineeRepository traineeRepository;
@@ -31,6 +37,14 @@ class TrainingServiceImplIT {
     private final TrainingService trainingService;
     private final CredentialGenerator credentialGenerator;
     private final ConversionService conversionService;
+    @Container
+    public static RabbitMQContainer rabbitMQContainer = new RabbitMQContainer("rabbitmq:3-management").withReuse(true);
+
+    @DynamicPropertySource
+    static void configure(DynamicPropertyRegistry registry) {
+        registry.add("spring.rabbitmq.host", rabbitMQContainer::getHost);
+        registry.add("spring.rabbitmq.port", rabbitMQContainer::getAmqpPort);
+    }
 
     @Autowired
     TrainingServiceImplIT(TraineeRepository traineeRepository,
