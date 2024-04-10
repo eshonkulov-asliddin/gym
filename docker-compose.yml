@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+    networks:
+      - gym_network  
+    volumes:
+      - mongo:/var/lib/mongo
+      - mongo_db:/data/db
+      - mongo_config:/data/configdb
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - 5672:15672
+    networks:
+      - gym_network  
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+
+  workload:
+    image: workload:latest
+    build: ./workload-service
+    container_name: workload
+    restart: on-failure
+    env_file: ./.env
+    ports:
+      - 8082:8082
+    networks:
+      - gym_network  
+    depends_on:
+      - mongodb
+      - rabbitmq
+    volumes:
+      - workload:/var/lib/workload
+
+  mysqldb:
+    image: mysql
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
+    networks:
+      - gym_network  
+    volumes:
+      - mysql:/var/lib/mysql
+
+  gym:
+    image: gym:latest
+    build: ./gym
+    container_name: gym
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    networks:
+      - gym_network  
+    depends_on:
+      - mysqldb  
+      - rabbitmq
+    volumes:
+      - gym:/var/lib/gym
+
+volumes:
+  gym:
+  workload:
+  mongo:
+  mongo_db:
+  mongo_config:
+  mysql:
+  rabbitmq:
+
+networks:
+  gym_network:
