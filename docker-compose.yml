@@ -7,26 +7,16 @@ services:
     container_name: mongodb
     restart: unless-stopped
     ports:
-      - 27017:27017
+      - ${MONGODB_EXTERNAL_PORT}:${MONGODB_INTERNAL_PORT}
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
     networks:
-      - gym_network  
+      - gym_network
     volumes:
       - mongo:/var/lib/mongo
-      - mongo_db:/data/db
+      - mongodb:/data/db
       - mongo_config:/data/configdb
-
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
-    container_name: rabbitmq
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
-    ports:
-      - 5672:15672
-    networks:
-      - gym_network  
-    volumes:
-      - rabbitmq:/var/lib/rabbitmq
 
   workload:
     image: workload:latest
@@ -35,28 +25,47 @@ services:
     restart: on-failure
     env_file: ./.env
     ports:
-      - 8082:8082
-    networks:
-      - gym_network  
+      - ${WORKLOAD_SERVER_EXTERNAL_PORT}:${WORKLOAD_SERVER_INTERNAL_PORT}
+    environment:
+      SPRING_RABBITMQ_HOST: ${RABBITMQ_HOST}
+      SPRING_RABBITMQ_PORT: ${RABBITMQ_EXTERNAL_PORT}
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS}
+      SPRING_DATA_MONGODB_URI: mongodb://${MONGODB_ROOT_USERNAME}:${MONGODB_ROOT_PASSWORD}@${MONGODB_HOST}:${MONGODB_INTERNAL_PORT}/${MONGODB_DB}?authSource=admin
     depends_on:
       - mongodb
       - rabbitmq
+    networks:
+      - gym_network
     volumes:
       - workload:/var/lib/workload
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - ${RABBITMQ_EXTERNAL_PORT}:${RABBITMQ_INTERNAL_PORT}
+    networks:
+      - gym_network
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
 
   mysqldb:
     image: mysql
     container_name: mysql
     restart: unless-stopped
+    ports:
+      - ${MYSQL_EXTERNAL_PORT}:${MYSQL_INTERNAL_PORT}
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    ports:
-      - 3306:3306
     networks:
-      - gym_network  
+      - gym_network
     volumes:
       - mysql:/var/lib/mysql
 
@@ -66,11 +75,19 @@ services:
     container_name: gym
     restart: unless-stopped
     ports:
-      - 8080:8080
+      - ${GYM_SERVER_EXTERNAL_PORT}:${GYM_SERVER_INTERNAL_PORT}
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:${MYSQL_EXTERNAL_PORT}/${MYSQL_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SPRING_RABBITMQ_HOST: ${RABBITMQ_HOST}
+      SPRING_RABBITMQ_PORT: ${RABBITMQ_EXTERNAL_PORT}
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS}
     networks:
-      - gym_network  
+      - gym_network
     depends_on:
-      - mysqldb  
+      - mysqldb
       - rabbitmq
     volumes:
       - gym:/var/lib/gym
@@ -79,7 +96,7 @@ volumes:
   gym:
   workload:
   mongo:
-  mongo_db:
+  mongodb:
   mongo_config:
   mysql:
   rabbitmq:

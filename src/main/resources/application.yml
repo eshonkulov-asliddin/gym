@@ -1,10 +1,5 @@
   #set active profile
   spring:
-    rabbitmq:
-      host: rabbitmq
-      port: 5672
-      username: guest
-      password: guest
     profiles:
       active: production
     application:

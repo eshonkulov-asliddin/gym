@@ -2,9 +2,6 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysqldb:3306/gym_db
-    username: user
-    password: pass
 
   jpa:
     hibernate:
