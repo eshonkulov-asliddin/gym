@@ -1,62 +1,57 @@
-#set active profile
-spring:
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-  profiles:
-    active: production
-  application:
-    name: gym
+  #set active profile
+  spring:
+    profiles:
+      active: production
+    application:
+      name: gym
 
-#actuator configuration
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "health, info, prometheus"
-  endpoint:
-    prometheus:
-      enabled: true
-    health:
-      show-details: always
-      show-components: always
+  #actuator configuration
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: "health, info, prometheus"
+    endpoint:
+      prometheus:
+        enabled: true
+      health:
+        show-details: always
+        show-components: always
 
-#logging
-logging:
-  level:
-    root: info
-    sql: info
-  file:
-    path: logs
+  #logging
+  logging:
+    level:
+      root: info
+      sql: info
+    file:
+      path: logs
 
-#openapi configuration
-springdoc:
-  swagger-ui:
-    tags-sorter: alpha
-openapi:
-  info:
-    title: "GYM API"
-    description: "API for GYM application"
-    version: "@project.version@"
-    license:
-      name: MIT
-      url: "https://opensource.org/licenses/MIT"
+  #openapi configuration
+  springdoc:
+    swagger-ui:
+      tags-sorter: alpha
+  openapi:
+    info:
+      title: "GYM API"
+      description: "API for GYM application"
+      version: "@project.version@"
+      license:
+        name: MIT
+        url: "https://opensource.org/licenses/MIT"
 
 
-#jwt secret key
-jwt:
-  secret:
-    key: "2dae84f846e4f4b158a8d26681707f4338495bc7ab68151d7f7679cc5e56202dd3da0d356da007a7c28cb0b780418f4f3246769972d6feaa8f610c7d1e7ecf6a"
-  expiration:
-    time: 86_400_000 # 1 day
+  #jwt secret key
+  jwt:
+    secret:
+      key: "2dae84f846e4f4b158a8d26681707f4338495bc7ab68151d7f7679cc5e56202dd3da0d356da007a7c28cb0b780418f4f3246769972d6feaa8f610c7d1e7ecf6a"
+    expiration:
+      time: 86_400_000 # 1 day
 
-#allowed endpoints
-registrationEndpoints:
-  /api/v1/trainers/register,
-  /api/v1/trainees/register
+  #allowed endpoints
+  registrationEndpoints:
+    /api/v1/trainers/register,
+    /api/v1/trainees/register
 
-swaggerEndpoints:
-  /v3/api-docs/**, 
-  /swagger-ui/**
+  swaggerEndpoints:
+    /v3/api-docs/**, 
+    /swagger-ui/**
